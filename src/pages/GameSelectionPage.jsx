@@ -5,6 +5,7 @@ import api from '../services/api';
 import GameCard from '../components/GameCard';
 import CircuitBackground from '../components/CircuitBackground';
 import '../styles/GameSelectionPage.css';
+import AnimatedBackground from '../components/AnimatedBackground';
 
 const GameSelectionPage = ({ onGameSelect }) => {
   const [games, setGames] = useState([]);
@@ -38,7 +39,7 @@ const GameSelectionPage = ({ onGameSelect }) => {
   if (loading) {
     return (
       <div className="game-selection-page">
-        <CircuitBackground />
+        <AnimatedBackground />
         <div className="loading-container">
           <div className="loading-spinner"></div>
           <p>Cargando juegos...</p>
@@ -50,7 +51,7 @@ const GameSelectionPage = ({ onGameSelect }) => {
   if (error) {
     return (
       <div className="game-selection-page">
-        <CircuitBackground />
+        <AnimatedBackground />
         <div className="error-container">
           <p className="error-message">{error}</p>
           <button className="retry-button" onClick={loadGames}>
@@ -63,7 +64,7 @@ const GameSelectionPage = ({ onGameSelect }) => {
 
   return (
     <div className="game-selection-page">
-      <CircuitBackground />
+      <AnimatedBackground />
       <div className="game-selection-content">
         <h1 className="page-title">Elija el juego a predecir:</h1>
         <div className="games-grid">

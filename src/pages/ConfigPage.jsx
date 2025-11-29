@@ -1,31 +1,24 @@
-
-
 import React from 'react';
 import { useAppContext } from '../context/AppContext';
 import { useBackend } from '../hooks/useBackend';
-import CircuitBackground from '../components/CircuitBackground';
+import AnimatedBackground from '../components/AnimatedBackground';
 import '../styles/ConfigPage.css';
 
 const ConfigPage = () => {
-  // Contexto global
   const { selectedTable, setSelectedTable } = useAppContext();
-  
-  // Hook personalizado para lógica del backend
   const { backendStatus, loading, isOnline, refreshStatus } = useBackend();
 
-  // Handler para cambio de mesa
   const handleTableChange = (e) => {
     setSelectedTable(e.target.value);
   };
 
   return (
     <div className="config-page">
-      <CircuitBackground />
+      <AnimatedBackground />
       
       <div className="config-content">
         <h1 className="config-title">Configuración</h1>
 
-        {/* Estado del Backend */}
         <div className="config-section">
           <h2>Estado del Backend</h2>
           {loading ? (
@@ -62,7 +55,6 @@ const ConfigPage = () => {
           </button>
         </div>
 
-        {/* Selección de Mesa */}
         <div className="config-section">
           <h2>Selección de Mesa</h2>
           <div className="table-selector">
@@ -80,7 +72,6 @@ const ConfigPage = () => {
           </div>
         </div>
 
-        {/* Información del Sistema */}
         <div className="config-section">
           <h2>Información del Sistema</h2>
           <div className="info-card">
@@ -90,7 +81,6 @@ const ConfigPage = () => {
           </div>
         </div>
 
-        {/* Advertencia */}
         <div className="config-warning">
           <p>⚠️ <strong>ADVERTENCIA:</strong> Este sistema es exclusivamente educativo. 
           NO debe utilizarse para apuestas reales.</p>

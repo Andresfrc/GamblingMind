@@ -1,14 +1,12 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAppContext } from '../context/AppContext';
 import api from '../services/api';
 import ChatInterface from '../components/ChatInterface';
 import PredictionDisplay from '../components/PredictionDisplay';
-import CircuitBackground from '../components/CircuitBackground';
+import AnimatedBackground from '../components/AnimatedBackground';
 import '../styles/PredictionPage.css';
 
 const PredictionPage = () => {
-  // Contexto global
   const { 
     selectedGame, 
     selectedTable, 
@@ -20,13 +18,11 @@ const PredictionPage = () => {
     setIsLoading 
   } = useAppContext();
 
-  // Estados locales de la página
   const [simulationCount, setSimulationCount] = useState(0);
   const [chatInput, setChatInput] = useState('');
   const [recommendation, setRecommendation] = useState('');
   const [gameImage, setGameImage] = useState('');
 
-  
   useEffect(() => {
     if (selectedGame) {
       initializeGame();
@@ -40,13 +36,9 @@ const PredictionPage = () => {
     }
   }, [predictionData]);
 
-  // ============================================
-  // LÓGICA DE NEGOCIO
-  // ============================================
-
   const setGameImageFromGame = () => {
     const images = {
-      'ruleta': 'https://via.placeholder.com/80x80/dc143c/ffffff?text=R',
+      'ruleta': '',
       'poker': 'https://via.placeholder.com/80x80/2e7d32/ffffff?text=P',
       'jackpot': 'https://via.placeholder.com/80x80/ffc107/ffffff?text=J',
       'blackjack': 'https://via.placeholder.com/80x80/1976d2/ffffff?text=B'
@@ -95,7 +87,6 @@ const PredictionPage = () => {
       return;
     }
 
-    // Generar recomendación basada en la predicción
     if (predictionData.probabilidades_color?.rojo > 50) {
       setRecommendation(`Apuesta Rojo (${predictionData.probabilidades_color.rojo.toFixed(1)}% probabilidad)`);
     } else if (predictionData.probabilidades_color?.negro > 50) {
@@ -123,7 +114,7 @@ const PredictionPage = () => {
     if (!chatInput.trim() || isLoading) return;
 
     const message = chatInput;
-    setChatInput(''); // Limpiar input inmediatamente
+    setChatInput('');
     addChatMessage('user', message);
     setIsLoading(true);
 
@@ -134,7 +125,6 @@ const PredictionPage = () => {
         addChatMessage('assistant', response.response);
       }
 
-      // Si el mensaje pide una nueva predicción
       const needsPrediction = message.toLowerCase().includes('predicción') || 
                               message.toLowerCase().includes('tendencia') ||
                               message.toLowerCase().includes('gráfico') ||
@@ -151,14 +141,10 @@ const PredictionPage = () => {
     }
   };
 
-  // ============================================
-  // RENDER
-  // ============================================
-
   if (!selectedGame) {
     return (
       <div className="prediction-page">
-        <CircuitBackground />
+        <AnimatedBackground />
         <div className="no-game-selected">
           <p>Por favor, selecciona un juego primero.</p>
         </div>
@@ -168,44 +154,40 @@ const PredictionPage = () => {
 
   return (
     <div className="prediction-page">
-      <CircuitBackground />
+      <AnimatedBackground />
       
       <div className="prediction-content">
-        {/* Header con controles */}
         <div className="prediction-header">
-          <h2>Análisis: {selectedGame.toUpperCase()}</h2>
-          <div className="prediction-controls">
-            <button className="simulate-btn" onClick={handleSimulate}>
-              🎲 Simular Ronda
-            </button>
-            <button className="refresh-btn" onClick={getPrediction}>
-              🔄 Actualizar Predicción
-            </button>
-            <span className="simulation-counter">
-              Simulaciones: {simulationCount}
-            </span>
-          </div>
-        </div>
+          <h2>Análisis: {selectedGame.toUpperCase()}
+            </h2>
+<div className="prediction-controls">
+<button className="simulate-btn" onClick={handleSimulate}>
+🎲 Simular Ronda
+</button>
+<button className="refresh-btn" onClick={getPrediction}>
+🔄 Actualizar Predicción
+</button>
+<span className="simulation-counter">
+Simulaciones: {simulationCount}
+</span>
+</div>
+</div>
+    <ChatInterface 
+      messages={chatHistory}
+      inputValue={chatInput}
+      onInputChange={setChatInput}
+      onSendMessage={handleSendMessage}
+      isLoading={isLoading}
+      gameImage={gameImage}
+      recommendation={recommendation}
+    />
+  </div>
 
-        {/* Chat Interface - SOLO RECIBE PROPS */}
-        <ChatInterface 
-          messages={chatHistory}
-          inputValue={chatInput}
-          onInputChange={setChatInput}
-          onSendMessage={handleSendMessage}
-          isLoading={isLoading}
-          gameImage={gameImage}
-          recommendation={recommendation}
-        />
-      </div>
-
-      {/* Display de Predicción - SOLO RECIBE PROPS */}
-      <PredictionDisplay 
-        game={selectedGame}
-        prediction={predictionData}
-      />
-    </div>
-  );
+  <PredictionDisplay 
+    game={selectedGame}
+    prediction={predictionData}
+  />
+</div>
+);
 };
-
 export default PredictionPage;
