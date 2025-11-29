@@ -6,11 +6,11 @@ const GameCard = ({ game, onClick }) => {
     'ruleta': '🎡',
     'poker': '🃏',
     'jackpot': '777',
-    'blackjack': '🎲'
+    'blackjack': '♠️'
   };
 
   const getGameName = (game) => {
-    if (game.id === 'blackjack') return 'OTRO...';
+    if (game.id === 'blackjack') return 'BLACKJACK';
     return game.nombre.split(' ')[0].toUpperCase();
   };
 

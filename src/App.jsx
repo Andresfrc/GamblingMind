@@ -1,51 +1,43 @@
-// src/App.jsx
-import React, { useState } from 'react';
-import { AppProvider } from './context/AppContext';
-import Sidebar from './components/Sidebar';
-import HomePage from './pages/HomePage';
-import ConfigPage from './pages/ConfigPage';
-import PredictionPage from './pages/PredictionPage';
-import './styles/App.css';
-import { AppContext } from './context/AppContextCreate';
+import React from "react";
+import { useAppContext } from "./context/AppContext";
+import Sidebar from "./components/Sidebar";
+import HomePage from "./pages/HomePage";
+import ConfigPage from "./pages/ConfigPage";
+import PredictionPage from "./pages/PredictionPage";
+import "./styles/index.css";
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('home');
-  const [gameSelected, setGameSelected] = useState(false);
+  // Usar el contexto para todo
+  const { currentPage, navigateTo, setSelectedGame } = useAppContext();
 
-  const handleNavigation = (page) => {
-    setCurrentPage(page);
-    if (page === 'home') {
-      setGameSelected(false);
-    }
+  // Handler para cuando se selecciona un juego
+  const handleGameSelect = (game) => {
+    setSelectedGame(game.id);
+    navigateTo("predicts");
   };
 
-  const handleGameSelect = () => {
-    setGameSelected(true);
-    setCurrentPage('predicts');
-  };
-
+  // Renderizar la página según el estado del contexto
   const renderPage = () => {
     switch (currentPage) {
-      case 'home':
+      case "home":
         return <HomePage onGameSelect={handleGameSelect} />;
-      case 'config':
+
+      case "config":
         return <ConfigPage />;
-      case 'predicts':
-        return gameSelected ? <PredictionPage /> : <HomePage onGameSelect={handleGameSelect} />;
+
+      case "predicts":
+        return <PredictionPage />;
+
       default:
         return <HomePage onGameSelect={handleGameSelect} />;
     }
   };
 
   return (
-    <AppProvider>
-      <div className="app">
-        <Sidebar currentPage={currentPage} onNavigate={handleNavigation} />
-        <div className="main-content">
-          {renderPage()}
-        </div>
-      </div>
-    </AppProvider>
+    <div className="app">
+      <Sidebar />
+      <div className="main-content">{renderPage()}</div>
+    </div>
   );
 }
 

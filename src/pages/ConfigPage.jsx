@@ -1,30 +1,19 @@
-import React, { useState, useEffect } from 'react';
+
+
+import React from 'react';
 import { useAppContext } from '../context/AppContext';
-import api from '../services/api';
+import { useBackend } from '../hooks/useBackend';
 import CircuitBackground from '../components/CircuitBackground';
 import '../styles/ConfigPage.css';
 
 const ConfigPage = () => {
+  // Contexto global
   const { selectedTable, setSelectedTable } = useAppContext();
-  const [backendStatus, setBackendStatus] = useState(null);
-  const [loading, setLoading] = useState(true);
+  
+  // Hook personalizado para lógica del backend
+  const { backendStatus, loading, isOnline, refreshStatus } = useBackend();
 
-  useEffect(() => {
-    checkBackendStatus();
-  }, []);
-
-  const checkBackendStatus = async () => {
-    try {
-      setLoading(true);
-      const response = await api.checkHealth();
-      setBackendStatus(response);
-    } catch (error) {
-      setBackendStatus({ status: 'error', error: error.message });
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // Handler para cambio de mesa
   const handleTableChange = (e) => {
     setSelectedTable(e.target.value);
   };
@@ -36,37 +25,44 @@ const ConfigPage = () => {
       <div className="config-content">
         <h1 className="config-title">Configuración</h1>
 
+        {/* Estado del Backend */}
         <div className="config-section">
           <h2>Estado del Backend</h2>
           {loading ? (
             <p>Verificando conexión...</p>
           ) : (
             <div className="status-card">
-              <div className={`status-indicator ${backendStatus?.status === 'ok' ? 'online' : 'offline'}`}>
-                {backendStatus?.status === 'ok' ? '✅ Online' : '❌ Offline'}
+              <div className={`status-indicator ${isOnline ? 'online' : 'offline'}`}>
+                {isOnline ? '✅ Online' : '❌ Offline'}
               </div>
-              {backendStatus?.status === 'ok' && (
+              
+              {isOnline && (
                 <div className="status-details">
                   <p><strong>Predictor:</strong> {backendStatus.predictor_loaded ? '✓' : '✗'}</p>
                   <p><strong>Simulador:</strong> {backendStatus.simulador_loaded ? '✓' : '✗'}</p>
                   <p><strong>Ollama IA:</strong> {backendStatus.ollama_available ? '✓' : '✗'}</p>
-                  <div className="mesas-info">
-                    <strong>Mesas Activas:</strong>
-                    <ul>
-                      <li>Ruleta: {backendStatus.mesas_activas?.ruleta || 0}</li>
-                      <li>Blackjack: {backendStatus.mesas_activas?.blackjack || 0}</li>
-                      <li>Poker: {backendStatus.mesas_activas?.poker || 0}</li>
-                    </ul>
-                  </div>
+                  
+                  {backendStatus.mesas_activas && (
+                    <div className="mesas-info">
+                      <strong>Mesas Activas:</strong>
+                      <ul>
+                        <li>Ruleta: {backendStatus.mesas_activas.ruleta || 0}</li>
+                        <li>Blackjack: {backendStatus.mesas_activas.blackjack || 0}</li>
+                        <li>Poker: {backendStatus.mesas_activas.poker || 0}</li>
+                      </ul>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
           )}
-          <button className="refresh-status-btn" onClick={checkBackendStatus}>
+          
+          <button className="refresh-status-btn" onClick={refreshStatus}>
             🔄 Verificar Conexión
           </button>
         </div>
 
+        {/* Selección de Mesa */}
         <div className="config-section">
           <h2>Selección de Mesa</h2>
           <div className="table-selector">
@@ -84,6 +80,7 @@ const ConfigPage = () => {
           </div>
         </div>
 
+        {/* Información del Sistema */}
         <div className="config-section">
           <h2>Información del Sistema</h2>
           <div className="info-card">
@@ -93,6 +90,7 @@ const ConfigPage = () => {
           </div>
         </div>
 
+        {/* Advertencia */}
         <div className="config-warning">
           <p>⚠️ <strong>ADVERTENCIA:</strong> Este sistema es exclusivamente educativo. 
           NO debe utilizarse para apuestas reales.</p>

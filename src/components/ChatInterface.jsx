@@ -1,23 +1,27 @@
-import React, { useState, useRef, useEffect } from 'react';
+
+
+import React, { useRef, useEffect } from 'react';
 import '../styles/ChatInterface.css';
 
-const ChatInterface = ({ messages, onSendMessage, isLoading, gameImage }) => {
-  const [input, setInput] = useState('');
+const ChatInterface = ({ 
+  messages,           // Array de mensajes desde la Page
+  inputValue,         // Valor del input desde la Page
+  onInputChange,      // Callback para cambios en el input
+  onSendMessage,      // Callback para enviar mensaje
+  isLoading,          // Estado de carga desde la Page
+  gameImage,          // URL de la imagen del juego
+  recommendation      // Recomendación desde la Page
+}) => {
   const messagesEndRef = useRef(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
+  // Solo efecto para scroll, no lógica de negocio
   useEffect(() => {
-    scrollToBottom();
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Handlers que solo llaman a los callbacks
   const handleSend = () => {
-    if (input.trim() && !isLoading) {
-      onSendMessage(input);
-      setInput('');
-    }
+    onSendMessage();
   };
 
   const handleKeyPress = (e) => {
@@ -29,6 +33,7 @@ const ChatInterface = ({ messages, onSendMessage, isLoading, gameImage }) => {
 
   return (
     <div className="chat-interface">
+      {/* Header */}
       <div className="chat-header">
         {gameImage && (
           <img 
@@ -42,6 +47,7 @@ const ChatInterface = ({ messages, onSendMessage, isLoading, gameImage }) => {
         </div>
       </div>
 
+      {/* Mensajes */}
       <div className="chat-messages">
         {messages.length === 0 ? (
           <div className="chat-empty">
@@ -62,6 +68,7 @@ const ChatInterface = ({ messages, onSendMessage, isLoading, gameImage }) => {
             </div>
           ))
         )}
+        
         {isLoading && (
           <div className="chat-message assistant">
             <div className="message-avatar">👁️</div>
@@ -71,30 +78,33 @@ const ChatInterface = ({ messages, onSendMessage, isLoading, gameImage }) => {
             </div>
           </div>
         )}
+        
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Recomendación */}
       <div className="chat-recommendation">
         <div className="recommendation-header">Movimiento Recomendado:</div>
         <div className="recommendation-text">
-          Apuesta Rojo/14 (Ganas!)
+          {recommendation || 'Esperando análisis...'}
         </div>
       </div>
 
+      {/* Input */}
       <div className="chat-input-container">
         <input
           type="text"
           className="chat-input"
           placeholder="¿Deseas que te muestre el gráfico de tendencia de color o la predicción extendida de 5 rondas?"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
+          value={inputValue}
+          onChange={(e) => onInputChange(e.target.value)}
           onKeyPress={handleKeyPress}
           disabled={isLoading}
         />
         <button 
           className="chat-send-btn"
           onClick={handleSend}
-          disabled={isLoading || !input.trim()}
+          disabled={isLoading || !inputValue.trim()}
         >
           ➤
         </button>

@@ -62,3 +62,35 @@
 .probability-arrow {
   font-size: 24px;
 }
+
+.hot-numbers {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.hot-numbers-label {
+  font-size: 12px;
+  font-weight: bold;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.hot-numbers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.hot-number {
+  font-size: 12px;
+  color: #2c2c2c;
+  padding: 5px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+}
+
+.hot-number span {
+  color: #b8a863;
+  font-weight: bold;
+}
