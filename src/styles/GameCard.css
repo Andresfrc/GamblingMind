@@ -1,0 +1,40 @@
+.game-card {
+  width: 200px;
+  height: 280px;
+  background-color: #ffffff;
+  border: 4px solid #b8a863;
+  border-radius: 20px;
+  padding: 20px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.game-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(184, 168, 99, 0.3);
+}
+
+.game-icon {
+  font-size: 80px;
+  margin-bottom: 20px;
+}
+
+.game-icon.jackpot-icon {
+  font-size: 48px;
+  font-weight: bold;
+}
+
+.game-name {
+  font-size: 20px;
+  font-weight: bold;
+  color: #2c2c2c;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
