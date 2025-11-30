@@ -6,7 +6,7 @@ import '../styles/Sidebar.css';
 // Importación de iconos modernos
 import { Home, Settings, Wallet, User } from "lucide-react";
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, onClose }) => {
   const { currentPage, navigateTo } = useAppContext();
 
   const menuItems = [
@@ -15,8 +15,13 @@ const Sidebar = () => {
     { id: 'predicts', icon: <Wallet size={22} />, label: 'Predicts' }
   ];
 
+  const handleMenuClick = (itemId) => {
+    navigateTo(itemId);
+    if (onClose) onClose();
+  };
+
   return (
-    <div className="sidebar">
+    <div className={`sidebar ${isOpen ? 'open' : ''}`}>
       <div className="sidebar-logo">
         <InteractiveEye size={80} />
         <div className="logo-text">GamblingMind</div>
@@ -24,13 +29,13 @@ const Sidebar = () => {
       </div>
 
       <div className="sidebar-menu">
-        {menuItems.map((item, index) => (
-          <div
-            key={item.id}
-            className={`menu-item ${currentPage === item.id ? 'active' : ''}`}
-            onClick={() => navigateTo(item.id)}
-            style={{ '--index': index }}
-          >
+         {menuItems.map((item, index) => (
+           <div
+             key={item.id}
+             className={`menu-item ${currentPage === item.id ? 'active' : ''}`}
+             onClick={() => handleMenuClick(item.id)}
+             style={{ '--index': index }}
+           >
             <span className="menu-icon">{item.icon}</span>
             <span className="menu-label">{item.label}</span>
             {currentPage === item.id && (

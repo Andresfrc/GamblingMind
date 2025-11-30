@@ -1,8 +1,8 @@
 /* src/styles/GameCard.css */
 
 .game-card-wrapper {
-  width: 220px;
-  height: 300px;
+  width: 280px;
+  height: 360px;
   cursor: pointer;
   transform-style: preserve-3d;
 }
@@ -91,8 +91,8 @@
 }
 
 .game-icon {
-  font-size: 90px;
-  margin-bottom: 20px;
+  font-size: 110px;
+  margin-bottom: 25px;
   transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.2));
 }
@@ -110,7 +110,7 @@
 }
 
 .game-name {
-  font-size: 22px;
+  font-size: 26px;
   font-weight: bold;
   color: #2c2c2c;
   text-align: center;

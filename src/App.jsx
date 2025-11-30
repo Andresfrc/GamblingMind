@@ -1,12 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { useAppContext } from "./context/useAppContext";
 import Sidebar from "./components/Sidebar";
+import MobileMenuToggle from "./components/MobileMenuToggle";
 import HomePage from "./pages/HomePage";
 import ConfigPage from "./pages/ConfigPage";
 import PredictionPage from "./pages/PredictionPage";
 import "./styles/index.css";
+import "./styles/responsive.css";
 
 function App() {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  
   // Usar el contexto para todo
   const { currentPage, navigateTo, setSelectedGame, clearChat } = useAppContext();
 
@@ -36,7 +40,8 @@ function App() {
 
   return (
     <div className="app">
-      <Sidebar />
+      <MobileMenuToggle isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="main-content">{renderPage()}</div>
     </div>
   );
