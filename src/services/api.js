@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:5000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 class ApiService {
   async request(endpoint, options = {}) {
@@ -11,11 +11,23 @@ class ApiService {
         ...options
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      let data = null;
+      try {
+        data = await response.json();
+      } catch {
+        data = null;
       }
 
-      return await response.json();
+      if (!response.ok) {
+        const error = new Error(
+          data?.mensaje || data?.error || `HTTP error! status: ${response.status}`
+        );
+        error.status = response.status;
+        error.data = data;
+        throw error;
+      }
+
+      return data;
     } catch (error) {
       console.error(`API Error [${endpoint}]:`, error);
       throw error;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAppContext } from '../context/AppContext';
+import { useAppContext } from '../context/useAppContext';
 import { useBackend } from '../hooks/useBackend';
 import AnimatedBackground from '../components/AnimatedBackground';
 import '../styles/ConfigPage.css';
@@ -77,7 +77,7 @@ const ConfigPage = () => {
           <div className="info-card">
             <p><strong>Versión:</strong> 1.0.0</p>
             <p><strong>Modo:</strong> Educativo</p>
-            <p><strong>Backend URL:</strong> http://localhost:5000</p>
+            <p><strong>Backend URL:</strong> {import.meta.env.VITE_API_URL || 'http://localhost:5000'}</p>
           </div>
         </div>
 

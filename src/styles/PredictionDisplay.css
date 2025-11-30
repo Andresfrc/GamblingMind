@@ -2,95 +2,431 @@
   position: fixed;
   top: 80px;
   right: 40px;
-  width: 280px;
-  background-color: #ffffff;
-  border: 4px solid #b8a863;
-  border-radius: 20px;
-  padding: 25px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 320px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border: 2px solid #b8a863;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   z-index: 5;
+  color: #fff;
 }
 
-.prediction-header {
-  text-align: center;
-  margin-bottom: 20px;
+.display-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   padding-bottom: 15px;
-  border-bottom: 2px solid #f0f0f0;
+  border-bottom: 1px solid rgba(184, 168, 99, 0.3);
+  margin-bottom: 15px;
 }
 
-.prediction-label {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 8px;
+.game-icon {
+  font-size: 32px;
 }
 
-.prediction-game-icon {
-  font-size: 64px;
-  margin-bottom: 10px;
-}
-
-.prediction-game-name {
-  font-size: 18px;
-  font-weight: bold;
-  text-transform: uppercase;
-  color: #2c2c2c;
-}
-
-.prediction-body {
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 2px solid #f0f0f0;
-}
-
-.probability-label {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 10px;
-}
-
-.probability-value {
-  font-size: 48px;
+.game-title {
+  font-size: 20px;
   font-weight: bold;
   color: #b8a863;
+}
+
+.display-content {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Last Result Section */
+.last-result {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 15px;
+}
+
+.result-label {
+  font-size: 12px;
+  color: #888;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.result-number {
+  font-size: 48px;
+  font-weight: bold;
   text-align: center;
+  padding: 10px;
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
+  margin: 0 auto 10px;
 }
 
-.probability-arrow {
-  font-size: 24px;
+.result-number.rojo {
+  background: linear-gradient(135deg, #dc143c, #8b0000);
+  color: white;
 }
 
-.hot-numbers {
-  margin-top: 15px;
-  padding-top: 15px;
-  border-top: 1px solid #e0e0e0;
+.result-number.negro {
+  background: linear-gradient(135deg, #333, #000);
+  color: white;
 }
 
-.hot-numbers-label {
+.result-number.verde {
+  background: linear-gradient(135deg, #228b22, #006400);
+  color: white;
+}
+
+.result-details {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.color-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
   font-size: 12px;
   font-weight: bold;
-  color: #666;
+  text-transform: uppercase;
+}
+
+.color-badge.rojo { background: #dc143c; }
+.color-badge.negro { background: #333; }
+.color-badge.verde { background: #228b22; }
+
+.detail {
+  font-size: 12px;
+  color: #aaa;
+  padding: 4px 8px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 8px;
+}
+
+/* History Section */
+.history-section {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.history-label {
+  font-size: 11px;
+  color: #888;
+  text-transform: uppercase;
   margin-bottom: 8px;
 }
 
-.hot-numbers-list {
+.history-numbers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.history-number {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.history-number.rojo { background: #dc143c; }
+.history-number.negro { background: #333; border: 1px solid #555; }
+.history-number.verde { background: #228b22; }
+
+/* Prediction Section */
+.prediction-section {
+  background: rgba(184, 168, 99, 0.1);
+  border: 1px solid rgba(184, 168, 99, 0.3);
+  border-radius: 12px;
+  padding: 15px;
+}
+
+.prediction-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.pred-label {
+  font-size: 13px;
+  color: #aaa;
+}
+
+.pred-value {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.pred-value.highlight {
+  color: #b8a863;
+  font-size: 24px;
+}
+
+/* Probability Bars */
+.probability-bars {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.prob-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bar-label {
+  width: 50px;
+  font-size: 12px;
+  color: #aaa;
+}
+
+.bar-container {
+  flex: 1;
+  height: 8px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.bar {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.bar.rojo { background: linear-gradient(90deg, #dc143c, #ff6b6b); }
+.bar.negro { background: linear-gradient(90deg, #333, #666); }
+
+.bar-value {
+  width: 45px;
+  font-size: 12px;
+  color: #fff;
+  text-align: right;
+}
+
+/* Hot Numbers */
+.hot-numbers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.hot-label {
+  font-size: 12px;
+  color: #ff6b6b;
+  margin-right: 4px;
 }
 
 .hot-number {
-  font-size: 12px;
-  color: #2c2c2c;
-  padding: 5px;
-  background-color: #f9f9f9;
-  border-radius: 4px;
+  font-size: 11px;
+  padding: 3px 8px;
+  background: rgba(255, 107, 107, 0.2);
+  border-radius: 10px;
+  color: #ff6b6b;
 }
 
-.hot-number span {
+/* Cards Display (Blackjack & Poker) */
+.cards-display {
+  margin: 10px 0;
+}
+
+.hand {
+  margin-bottom: 12px;
+}
+
+.hand-label {
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.cards {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.card {
+  background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+  color: #333;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.card.large {
+  padding: 12px 16px;
+  font-size: 20px;
+}
+
+.hand-value {
+  font-size: 14px;
   color: #b8a863;
   font-weight: bold;
+  margin-left: 10px;
+}
+
+.result-badge {
+  text-align: center;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.result-badge.win {
+  background: linear-gradient(135deg, #228b22, #32cd32);
+}
+
+.result-badge.lose {
+  background: linear-gradient(135deg, #dc143c, #8b0000);
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.stat-item {
+  background: rgba(255,255,255,0.05);
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.stat-item.large {
+  grid-column: span 2;
+}
+
+.stat-label {
+  font-size: 10px;
+  color: #888;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.stat-value {
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.stat-value.positive { color: #32cd32; }
+.stat-value.negative { color: #dc143c; }
+
+.favorable-alert {
+  margin-top: 12px;
+  padding: 10px;
+  background: linear-gradient(135deg, rgba(50, 205, 50, 0.2), rgba(34, 139, 34, 0.2));
+  border: 1px solid #32cd32;
+  border-radius: 8px;
+  text-align: center;
+  color: #32cd32;
+  font-weight: bold;
+}
+
+/* Poker specific */
+.poker-hand {
+  justify-content: center;
+}
+
+.community {
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.poker-info {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 12px;
+  font-size: 13px;
+  color: #aaa;
+}
+
+/* Jackpot specific */
+.jackpot-amount {
+  font-size: 36px;
+  font-weight: bold;
+  color: #ffd700;
+  text-align: center;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+}
+
+.winner-alert {
+  margin-top: 10px;
+  padding: 10px;
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.2));
+  border: 1px solid #ffd700;
+  border-radius: 8px;
+  text-align: center;
+  color: #ffd700;
+}
+
+.jackpot-prediction {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.range-label {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 8px;
+}
+
+.range-values {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.range-min, .range-max {
+  font-size: 18px;
+  font-weight: bold;
+  color: #ffd700;
+}
+
+.range-separator {
+  color: #666;
+}
+
+.trend-creciente { color: #32cd32; }
+.trend-decreciente { color: #dc143c; }
+.trend-estable { color: #b8a863; }
+
+/* Scrollbar styling */
+.prediction-display::-webkit-scrollbar {
+  width: 6px;
+}
+
+.prediction-display::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.05);
+  border-radius: 3px;
+}
+
+.prediction-display::-webkit-scrollbar-thumb {
+  background: rgba(184, 168, 99, 0.5);
+  border-radius: 3px;
 }

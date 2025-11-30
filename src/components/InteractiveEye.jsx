@@ -4,14 +4,18 @@ const InteractiveEye = ({ size = 80 }) => {
   const [pupilPosition, setPupilPosition] = useState({ x: 0, y: 0 });
   const [isBlinking, setIsBlinking] = useState(false);
   const eyeRef = useRef(null);
+  const isBlinkingRef = useRef(false);
 
-  // refs para timers para limpiar correctamente
   const blinkTimeoutRef = useRef(null);
   const nextBlinkTimeoutRef = useRef(null);
 
   useEffect(() => {
+    isBlinkingRef.current = isBlinking;
+  }, [isBlinking]);
+
+  useEffect(() => {
     const handleMouseMove = (e) => {
-      if (!eyeRef.current || isBlinking) return;
+      if (!eyeRef.current || isBlinkingRef.current) return;
 
       const eye = eyeRef.current.getBoundingClientRect();
       const eyeCenterX = eye.left + eye.width / 2;
@@ -34,17 +38,14 @@ const InteractiveEye = ({ size = 80 }) => {
 
     window.addEventListener("mousemove", handleMouseMove);
 
-    // scheduleBlink recursivo: programa un parpadeo aleatorio y luego programa el siguiente
     const scheduleBlink = () => {
-      const delay = Math.random() * 4000 + 3000; // entre 3s y 7s
+      const delay = Math.random() * 4000 + 3000;
       nextBlinkTimeoutRef.current = setTimeout(() => {
         setIsBlinking(true);
-        // duración del parpadeo
         blinkTimeoutRef.current = setTimeout(() => {
           setIsBlinking(false);
-          // programar siguiente blink
           scheduleBlink();
-        }, 160); // tiempo cerrado en ms (ajustable)
+        }, 160);
       }, delay);
     };
 
@@ -56,7 +57,7 @@ const InteractiveEye = ({ size = 80 }) => {
       if (nextBlinkTimeoutRef.current)
         clearTimeout(nextBlinkTimeoutRef.current);
     };
-  }, [size]); // ya no dependemos de isBlinking para evitar recrear timers
+  }, [size]);
 
   return (
     <div

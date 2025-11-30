@@ -1,13 +1,13 @@
 
-import { useState, useEffect } from 'react';
-import api from '../services/api';
+import { useState, useEffect, useCallback } from 'react';
+import api from '../services/api.js';
 
 export const useBackend = () => {
   const [backendStatus, setBackendStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const checkHealth = async () => {
+  const checkHealth = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -22,12 +22,11 @@ export const useBackend = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  // Verificar al montar
   useEffect(() => {
     checkHealth();
-  }, []);
+  }, [checkHealth]);
 
   return {
     backendStatus,

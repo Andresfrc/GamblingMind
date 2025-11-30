@@ -1,23 +1,15 @@
-// src/pages/GameSelectionPage.jsx
-import React, { useState, useEffect } from 'react';
-import { useAppContext } from '../context/AppContext';
-import api from '../services/api';
+import React, { useState, useEffect, useCallback } from 'react';
+import api from '../services/api.js';
 import GameCard from '../components/GameCard';
-import CircuitBackground from '../components/CircuitBackground';
 import '../styles/GameSelectionPage.css';
-import AnimatedBackground from '../components/AnimatedBackground';
+import AnimatedBackground from '../components/AnimatedBackground.jsx';
 
 const GameSelectionPage = ({ onGameSelect }) => {
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { setSelectedGame } = useAppContext();
 
-  useEffect(() => {
-    loadGames();
-  }, []);
-
-  const loadGames = async () => {
+  const loadGames = useCallback(async () => {
     try {
       setLoading(true);
       const response = await api.getGames();
@@ -29,17 +21,15 @@ const GameSelectionPage = ({ onGameSelect }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const handleGameSelect = (game) => {
-    setSelectedGame(game.id);
-    onGameSelect(game);
-  };
+  useEffect(() => {
+    loadGames();
+  }, [loadGames]);
 
   if (loading) {
     return (
       <div className="game-selection-page">
-        <AnimatedBackground />
         <div className="loading-container">
           <div className="loading-spinner"></div>
           <p>Cargando juegos...</p>
@@ -51,7 +41,6 @@ const GameSelectionPage = ({ onGameSelect }) => {
   if (error) {
     return (
       <div className="game-selection-page">
-        <AnimatedBackground />
         <div className="error-container">
           <p className="error-message">{error}</p>
           <button className="retry-button" onClick={loadGames}>
@@ -72,7 +61,7 @@ const GameSelectionPage = ({ onGameSelect }) => {
             <GameCard 
               key={game.id} 
               game={game} 
-              onClick={() => handleGameSelect(game)}
+              onClick={() => onGameSelect(game)}
             />
           ))}
         </div>

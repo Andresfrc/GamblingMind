@@ -19,12 +19,11 @@ const ChatInterface = ({
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Handlers que solo llaman a los callbacks
   const handleSend = () => {
     onSendMessage();
   };
 
-  const handleKeyPress = (e) => {
+  const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
@@ -98,7 +97,7 @@ const ChatInterface = ({
           placeholder="¿Deseas que te muestre el gráfico de tendencia de color o la predicción extendida de 5 rondas?"
           value={inputValue}
           onChange={(e) => onInputChange(e.target.value)}
-          onKeyPress={handleKeyPress}
+          onKeyDown={handleKeyDown}
           disabled={isLoading}
         />
         <button 

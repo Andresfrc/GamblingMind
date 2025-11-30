@@ -1,5 +1,5 @@
 import React from "react";
-import { useAppContext } from "./context/AppContext";
+import { useAppContext } from "./context/useAppContext";
 import Sidebar from "./components/Sidebar";
 import HomePage from "./pages/HomePage";
 import ConfigPage from "./pages/ConfigPage";
