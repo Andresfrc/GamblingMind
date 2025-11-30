@@ -25,11 +25,15 @@ const PredictionPage = () => {
   const [lastSimulation, setLastSimulation] = useState(null);
   const [simulationHistory, setSimulationHistory] = useState([]);
   const initializedGameRef = useRef(null);
+  const isMountedRef = useRef(true);
 
   const getPrediction = useCallback(async () => {
     try {
       setIsLoading(true);
       const response = await api.predict(selectedGame, selectedTable);
+      
+      // Solo actualizar si el componente está montado
+      if (!isMountedRef.current) return;
       
       if (response.prediccion) {
         setPredictionData(response.prediccion);
@@ -38,18 +42,26 @@ const PredictionPage = () => {
       }
     } catch (error) {
       console.error('Error getting prediction:', error);
-      const data = error.data;
-      if (data?.mensaje || data?.error) {
-        addChatMessage('assistant', `⚠️ ${data.mensaje || data.error}`);
-      } else {
-        addChatMessage('assistant', 'Error al obtener la predicción. Intenta de nuevo.');
+      
+      if (isMountedRef.current) {
+        const data = error.data;
+        if (data?.mensaje || data?.error) {
+          addChatMessage('assistant', `⚠️ ${data.mensaje || data.error}`);
+        } else {
+          addChatMessage('assistant', 'Error al obtener la predicción. Intenta de nuevo.');
+        }
       }
     } finally {
-      setIsLoading(false);
+      if (isMountedRef.current) {
+        setIsLoading(false);
+      }
     }
   }, [selectedGame, selectedTable, setIsLoading, setPredictionData, addChatMessage]);
 
   useEffect(() => {
+    // Inicializar referencia de montaje
+    isMountedRef.current = true;
+    
     if (!selectedGame) return;
     
     // Evitar re-inicialización si ya se inicializó para este juego
@@ -57,7 +69,7 @@ const PredictionPage = () => {
     initializedGameRef.current = selectedGame;
 
     const images = {
-      'ruleta': '',
+      'ruleta': 'https://via.placeholder.com/80x80/d32f2f/ffffff?text=R',
       'poker': 'https://via.placeholder.com/80x80/2e7d32/ffffff?text=P',
       'jackpot': 'https://via.placeholder.com/80x80/ffc107/ffffff?text=J',
       'blackjack': 'https://via.placeholder.com/80x80/1976d2/ffffff?text=B'
@@ -67,34 +79,50 @@ const PredictionPage = () => {
     const initializeGame = async () => {
       const history = [];
       try {
+        // Ejecutar 15 simulaciones para obtener historial
         for (let i = 0; i < 15; i++) {
           const result = await api.simulate(selectedGame, selectedTable);
           if (result.resultado) {
             history.push(result.resultado);
           }
         }
-        setSimulationHistory(history.slice(-10));
-        setLastSimulation(history[history.length - 1] || null);
-        setSimulationCount(15);
+        
+        // Solo actualizar si el componente sigue montado
+        if (isMountedRef.current) {
+          setSimulationHistory(history.slice(-10));
+          setLastSimulation(history[history.length - 1] || null);
+          setSimulationCount(15);
+        }
       } catch (error) {
         console.error('Error running simulations:', error);
-        addChatMessage('assistant', '⚠️ Error al ejecutar simulaciones');
+        if (isMountedRef.current) {
+          addChatMessage('assistant', '⚠️ Error al ejecutar simulaciones');
+        }
       }
       
       try {
         setIsLoading(true);
         const response = await api.predict(selectedGame, selectedTable);
-        if (response.prediccion) {
+        
+        // Solo actualizar si el componente sigue montado
+        if (isMountedRef.current && response.prediccion) {
           setPredictionData(response.prediccion);
         }
       } catch (error) {
         console.error('Error getting initial prediction:', error);
       } finally {
-        setIsLoading(false);
+        if (isMountedRef.current) {
+          setIsLoading(false);
+        }
       }
     };
 
     initializeGame();
+
+    // Cleanup: marcar componente como desmontado
+    return () => {
+      isMountedRef.current = false;
+    };
   }, [selectedGame, selectedTable, addChatMessage, setIsLoading, setPredictionData]);
 
   useEffect(() => {
@@ -140,20 +168,27 @@ const PredictionPage = () => {
   }, [predictionData, selectedGame]);
 
   const handleSimulate = useCallback(async () => {
+    if (isLoading) return; // Evitar múltiples clics simultáneos
+    
     try {
+      setIsLoading(true);
       const result = await api.simulate(selectedGame, selectedTable);
       if (result.resultado) {
         setLastSimulation(result.resultado);
         setSimulationHistory(prev => [...prev.slice(-9), result.resultado]);
+        setSimulationCount(prev => prev + 1);
       }
-      setSimulationCount(prev => prev + 1);
+      
+      // Obtener nueva predicción después de simular
       await getPrediction();
       addChatMessage('assistant', '✅ Nueva simulación completada');
     } catch (error) {
       console.error('Error simulating:', error);
       addChatMessage('assistant', '⚠️ Error en la simulación');
+    } finally {
+      setIsLoading(false);
     }
-  }, [selectedGame, selectedTable, getPrediction, addChatMessage]);
+  }, [selectedGame, selectedTable, getPrediction, addChatMessage, isLoading]);
 
   const handleSendMessage = async () => {
     if (!chatInput.trim() || isLoading) return;
@@ -208,38 +243,38 @@ const PredictionPage = () => {
       
       <div className="prediction-content">
         <div className="prediction-header">
-          <h2>Análisis: {selectedGame.toUpperCase()}
-            </h2>
-<div className="prediction-controls">
-<button className="simulate-btn" onClick={handleSimulate}>
-🎲 Simular Ronda
-</button>
-<button className="refresh-btn" onClick={getPrediction}>
-🔄 Actualizar Predicción
-</button>
-<span className="simulation-counter">
-Simulaciones: {simulationCount}
-</span>
-</div>
-</div>
-    <ChatInterface 
-      messages={chatHistory}
-      inputValue={chatInput}
-      onInputChange={setChatInput}
-      onSendMessage={handleSendMessage}
-      isLoading={isLoading}
-      gameImage={gameImage}
-      recommendation={recommendation}
-    />
-  </div>
+          <h2>Análisis: {selectedGame.toUpperCase()}</h2>
+          <div className="prediction-controls">
+            <button className="simulate-btn" onClick={handleSimulate} disabled={isLoading}>
+              🎲 Simular Ronda
+            </button>
+            <button className="refresh-btn" onClick={getPrediction} disabled={isLoading}>
+              🔄 Actualizar Predicción
+            </button>
+            <span className="simulation-counter">
+              Simulaciones: {simulationCount}
+            </span>
+          </div>
+        </div>
 
-  <PredictionDisplay 
-    game={selectedGame}
-    prediction={predictionData}
-    lastSimulation={lastSimulation}
-    simulationHistory={simulationHistory}
-  />
-</div>
-);
+        <ChatInterface 
+          messages={chatHistory}
+          inputValue={chatInput}
+          onInputChange={setChatInput}
+          onSendMessage={handleSendMessage}
+          isLoading={isLoading}
+          gameImage={gameImage}
+          recommendation={recommendation}
+        />
+
+        <PredictionDisplay 
+          game={selectedGame}
+          prediction={predictionData}
+          lastSimulation={lastSimulation}
+          simulationHistory={simulationHistory}
+        />
+      </div>
+    </div>
+  );
 };
 export default PredictionPage;

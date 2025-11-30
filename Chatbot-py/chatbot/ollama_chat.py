@@ -18,6 +18,7 @@ class ChatbotOllama:
         self.model = model
         self.url = url
         self.system_prompt = self._crear_system_prompt()
+        
     
     def _crear_system_prompt(self):
         """Define el contexto y comportamiento del chatbot"""
@@ -153,7 +154,7 @@ Reglas:
                 else:
                     return False, f"⚠️ Modelo {self.model} no encontrado. Descárgalo con: ollama pull {self.model}"
             return False, "⚠️ Ollama está corriendo pero no responde correctamente"
-        except:
+        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout, Exception) as e:
             return False, "❌ Ollama no está corriendo. Ejecuta: ollama serve"
 
 

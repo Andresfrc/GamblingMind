@@ -10,6 +10,10 @@ from typing import Dict, List, Tuple
 import warnings
 warnings.filterwarnings('ignore')
 
+# Constantes de ruleta europea
+NUMEROS_ROJOS = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
+NUMEROS_NEGROS = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35]
+
 
 class PredictorCasino:
     """
@@ -60,11 +64,8 @@ class PredictorCasino:
         numeros_frios = list(todos_numeros - numeros_en_historial)[:5]
         
         # Análisis de colores
-        rojos = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]
-        negros = [2,4,6,8,10,11,13,15,17,20,22,24,26,28,29,31,33,35]
-        
-        count_rojo = sum(1 for n in self.historiales['ruleta'] if n in rojos)
-        count_negro = sum(1 for n in self.historiales['ruleta'] if n in negros)
+        count_rojo = sum(1 for n in self.historiales['ruleta'] if n in NUMEROS_ROJOS)
+        count_negro = sum(1 for n in self.historiales['ruleta'] if n in NUMEROS_NEGROS)
         count_verde = sum(1 for n in self.historiales['ruleta'] if n == 0)
         
         prob_rojo = (count_rojo / total_tiradas * 100) if total_tiradas > 0 else 48.6
@@ -289,8 +290,7 @@ class PredictorCasino:
         ultimos_5 = historial[-5:]
         
         # Detectar rachas de color
-        rojos = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]
-        colores = ['rojo' if n in rojos else ('verde' if n == 0 else 'negro') for n in ultimos_5]
+        colores = ['rojo' if n in NUMEROS_ROJOS else ('verde' if n == 0 else 'negro') for n in ultimos_5]
         
         if len(set(colores)) == 1:
             return f"Racha de {colores[0]} ({len(colores)} seguidos)"

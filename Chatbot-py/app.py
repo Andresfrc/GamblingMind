@@ -12,7 +12,13 @@ from utils.helpers import validar_juego, log_evento
 import os
 
 app = Flask(__name__)
-CORS(app)
+# Restringir CORS solo al frontend local
+CORS(app, origins=[
+    "http://localhost:5173",      # Vite dev server (default)
+    "http://localhost:3000",      # Si usa otro puerto
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:3000"
+])
 
 # Inicializar componentes globalmente
 predictor = None
@@ -282,7 +288,7 @@ def chat():
         return jsonify({
             'response': response,
             'contexto_detectado': contexto_prediccion is not None,
-            'juego_detectado': contexto_prediccion.get('juego') if contexto_prediccion else None
+            'juego_detectado': contexto_prediccion.get('juego') if (contexto_prediccion and isinstance(contexto_prediccion, dict)) else None
         })
         
     except Exception as e:

@@ -8,11 +8,12 @@ import "./styles/index.css";
 
 function App() {
   // Usar el contexto para todo
-  const { currentPage, navigateTo, setSelectedGame } = useAppContext();
+  const { currentPage, navigateTo, setSelectedGame, clearChat } = useAppContext();
 
   // Handler para cuando se selecciona un juego
   const handleGameSelect = (game) => {
     setSelectedGame(game.id);
+    clearChat(); // Limpiar chat al cambiar de juego
     navigateTo("predicts");
   };
 

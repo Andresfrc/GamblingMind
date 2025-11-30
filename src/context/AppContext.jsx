@@ -34,6 +34,10 @@ const AppProvider = ({ children }) => {
     setCurrentPage(page);
     if (page === 'home') {
       setSelectedGame(null);
+      // Limpiar chat y simulaciones al volver al home
+      setChatHistory([]);
+      setSimulationHistory([]);
+      setPredictionData(null);
     }
   };
 

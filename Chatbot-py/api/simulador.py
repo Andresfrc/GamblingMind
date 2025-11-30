@@ -9,6 +9,10 @@ import numpy as np
 from typing import List, Dict, Tuple
 from collections import deque
 
+# Constantes de ruleta europea
+NUMEROS_ROJOS = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
+NUMEROS_NEGROS = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35]
+
 
 class SimuladorCasino:
     """
@@ -80,10 +84,9 @@ class SimuladorCasino:
             numero = random.randint(1, 36)
         
         # Determinar color
-        rojos = [1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36]
         if numero == 0:
             color = 'verde'
-        elif numero in rojos:
+        elif numero in NUMEROS_ROJOS:
             color = 'rojo'
         else:
             color = 'negro'

@@ -1,5 +1,4 @@
 
-
 import React, { useRef, useEffect } from 'react';
 import '../styles/ChatInterface.css';
 
@@ -9,7 +8,6 @@ const ChatInterface = ({
   onInputChange,      // Callback para cambios en el input
   onSendMessage,      // Callback para enviar mensaje
   isLoading,          // Estado de carga desde la Page
-  gameImage,          // URL de la imagen del juego
   recommendation      // Recomendación desde la Page
 }) => {
   const messagesEndRef = useRef(null);
@@ -34,15 +32,8 @@ const ChatInterface = ({
     <div className="chat-interface">
       {/* Header */}
       <div className="chat-header">
-        {gameImage && (
-          <img 
-            src={gameImage}
-            alt="Game"
-            className="chat-game-image"
-          />
-        )}
         <div className="chat-header-text">
-          <p>Aquí está la mesa, quiero que me digas qué probabilidad tengo si apuesto al rojo.</p>
+          <p>Haz preguntas sobre probabilidades, estrategias y análisis del juego.</p>
         </div>
       </div>
 
