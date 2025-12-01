@@ -1,0 +1,448 @@
+/* Variables para dark mode */
+:root {
+  --color-accent-light: #b8a863;
+  --color-accent-dark: #00dd00;
+  --bg-light: #f5f5f5;
+  --bg-dark: #0a0f0a;
+}
+
+/* Light mode (default) */
+* {
+  transition: background-color 0.6s cubic-bezier(0.23, 1, 0.320, 1),
+              color 0.6s cubic-bezier(0.23, 1, 0.320, 1),
+              border-color 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+}
+
+html, body, #root, .app, .main-content {
+  background-color: var(--bg-light);
+  color: #2c2c2c;
+}
+
+/* Dark mode - Todo cambia */
+html.dark-mode,
+html.dark-mode body,
+html.dark-mode #root,
+html.dark-mode .app,
+html.dark-mode .main-content {
+  background-color: var(--bg-dark) !important;
+  background-image: 
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 221, 0, 0.03) 0px,
+      rgba(0, 221, 0, 0.03) 1px,
+      transparent 1px,
+      transparent 2px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(0, 221, 0, 0.02) 0px,
+      rgba(0, 221, 0, 0.02) 1px,
+      transparent 1px,
+      transparent 2px
+    ) !important;
+  color: #e0e0e0;
+}
+
+/* Páginas completas */
+html.dark-mode .home-page,
+html.dark-mode .prediction-page,
+html.dark-mode .config-page,
+html.dark-mode .stats-page,
+html.dark-mode .game-selection-page {
+  background-color: var(--bg-dark) !important;
+  color: #e0e0e0;
+}
+
+html.dark-mode .page-title {
+  color: #e0e0e0 !important;
+}
+
+/* Cards */
+.stat-card,
+.analysis-card,
+.chart-wrapper,
+.predictions-history,
+.advanced-analysis,
+.comparativa-azar,
+.game-card,
+.prediction-display,
+.chat-interface {
+  transition: background-color 0.6s ease,
+              border-color 0.6s ease,
+              color 0.6s ease,
+              box-shadow 0.6s ease;
+}
+
+html.dark-mode .stat-card {
+  background: linear-gradient(135deg, #0f1a0f 0%, #0a0f0a 100%) !important;
+  border-color: var(--color-accent-dark) !important;
+  color: #e0e0e0 !important;
+  box-shadow: 0 10px 30px rgba(0, 221, 0, 0.1) !important;
+}
+
+html.dark-mode .stat-card h2 {
+  color: #b0b0b0 !important;
+}
+
+html.dark-mode .analysis-card {
+  background: linear-gradient(135deg, #0f1a0f 0%, #0a0f0a 100%) !important;
+  border-color: var(--color-accent-dark) !important;
+  color: #e0e0e0 !important;
+}
+
+html.dark-mode .chart-wrapper {
+  background: linear-gradient(135deg, #0f1a0f 0%, #0a0f0a 100%) !important;
+  border-color: var(--color-accent-dark) !important;
+  color: #e0e0e0 !important;
+  box-shadow: 0 10px 30px rgba(0, 221, 0, 0.1) !important;
+}
+
+html.dark-mode .predictions-history {
+  background: linear-gradient(135deg, #0f1a0f 0%, #0a0f0a 100%) !important;
+  border-color: var(--color-accent-dark) !important;
+  color: #e0e0e0 !important;
+}
+
+html.dark-mode .advanced-analysis {
+  background: linear-gradient(135deg, #0f1a0f 0%, #0a0f0a 100%) !important;
+  border-color: var(--color-accent-dark) !important;
+}
+
+html.dark-mode .game-card {
+  background: linear-gradient(135deg, #0f1a0f 0%, #0a0f0a 100%) !important;
+  border-color: #1a2a1a !important;
+}
+
+html.dark-mode .game-card:hover {
+  border-color: var(--color-accent-dark) !important;
+  box-shadow: 0 10px 30px rgba(0, 221, 0, 0.2) !important;
+}
+
+/* Chat */
+html.dark-mode .chat-interface {
+  background: linear-gradient(135deg, #0f1a0f 0%, #0a0f0a 100%) !important;
+  border-color: var(--color-accent-dark) !important;
+  color: #e0e0e0 !important;
+}
+
+html.dark-mode .chat-messages {
+  background-color: #0a0f0a !important;
+}
+
+html.dark-mode .message {
+  background-color: #0f1a0f !important;
+  color: #e0e0e0 !important;
+  border-color: rgba(0, 221, 0, 0.1) !important;
+}
+
+html.dark-mode .message.user {
+  background-color: #1a2a1a !important;
+  border-color: rgba(0, 221, 0, 0.2) !important;
+}
+
+html.dark-mode .message.assistant {
+  background-color: #0f1a0f !important;
+}
+
+html.dark-mode .chat-input {
+  background-color: #0f1a0f !important;
+  border-color: #1a2a1a !important;
+  color: #e0e0e0 !important;
+}
+
+html.dark-mode .chat-input input {
+  background-color: #0a0f0a !important;
+  border-color: #1a2a1a !important;
+  color: #e0e0e0 !important;
+}
+
+html.dark-mode .chat-input input::placeholder {
+  color: #666 !important;
+}
+
+/* Tablas */
+html.dark-mode .table-header {
+  background-color: #0f1a0f !important;
+  color: #e0e0e0 !important;
+  border-color: var(--color-accent-dark) !important;
+}
+
+html.dark-mode .table-row {
+  border-bottom-color: #1a2a1a !important;
+  color: #b0b0b0 !important;
+}
+
+html.dark-mode .table-row:hover {
+  background-color: #0f1a0f !important;
+}
+
+/* Filtros */
+html.dark-mode .stats-filters {
+  background: linear-gradient(135deg, #0f1a0f 0%, #0a0f0a 100%) !important;
+  border-color: var(--color-accent-dark) !important;
+}
+
+html.dark-mode .filter-group label {
+  color: #e0e0e0 !important;
+}
+
+html.dark-mode .filter-group select,
+html.dark-mode .filter-group input {
+  background-color: #0f1a0f !important;
+  border-color: #1a2a1a !important;
+  color: #e0e0e0 !important;
+}
+
+html.dark-mode .filter-reset {
+  background-color: var(--color-accent-dark) !important;
+  color: #0a0f0a !important;
+}
+
+/* Textos */
+html.dark-mode .stat-big-number {
+  color: var(--color-accent-dark) !important;
+}
+
+html.dark-mode .analysis-value {
+  color: var(--color-accent-dark) !important;
+}
+
+html.dark-mode .col-pred {
+  color: var(--color-accent-dark) !important;
+}
+
+html.dark-mode .accuracy {
+  color: var(--color-accent-dark) !important;
+}
+
+/* Sidebar */
+html.dark-mode .sidebar {
+  background: linear-gradient(180deg, #0f1a0f 0%, #0a0f0a 100%) !important;
+  border-right-color: rgba(0, 221, 0, 0.2) !important;
+}
+
+html.dark-mode .sidebar h2 {
+  color: #e0e0e0 !important;
+}
+
+html.dark-mode .sidebar p,
+html.dark-mode .sidebar a {
+  color: #b0b0b0 !important;
+}
+
+/* Botones */
+html.dark-mode button {
+  transition: all 0.3s ease;
+}
+
+html.dark-mode .simulate-btn,
+html.dark-mode .refresh-btn,
+html.dark-mode .send-btn {
+  background-color: var(--color-accent-dark) !important;
+  color: #0a0f0a !important;
+  border-color: var(--color-accent-dark) !important;
+}
+
+html.dark-mode .simulate-btn:hover,
+html.dark-mode .refresh-btn:hover,
+html.dark-mode .send-btn:hover {
+  background-color: #00ff00 !important;
+}
+
+/* Links */
+html.dark-mode a {
+  color: var(--color-accent-dark) !important;
+}
+
+/* Toast */
+html.dark-mode .toast {
+  background: linear-gradient(135deg, #0f1a0f 0%, #0a0f0a 100%) !important;
+  color: #e0e0e0 !important;
+  border-left-color: var(--color-accent-dark) !important;
+}
+
+html.dark-mode .toast.toast-success .toast-icon {
+  color: var(--color-accent-dark) !important;
+}
+
+/* Dark mode toggle */
+html.dark-mode .dark-mode-toggle {
+  background: linear-gradient(135deg, #0f1a0f 0%, #0a0f0a 100%) !important;
+  border-color: var(--color-accent-dark) !important;
+  box-shadow: 0 4px 16px rgba(0, 221, 0, 0.2) !important;
+}
+
+/* Headings */
+html.dark-mode h1,
+html.dark-mode h2,
+html.dark-mode h3,
+html.dark-mode h4,
+html.dark-mode h5,
+html.dark-mode h6 {
+  color: #e0e0e0 !important;
+}
+
+/* General text */
+html.dark-mode p,
+html.dark-mode span,
+html.dark-mode label {
+  color: #b0b0b0 !important;
+}
+
+/* Inputs y textareas */
+html.dark-mode input,
+html.dark-mode textarea,
+html.dark-mode select {
+  background-color: #0f1a0f !important;
+  border-color: #1a2a1a !important;
+  color: #e0e0e0 !important;
+}
+
+html.dark-mode input:focus,
+html.dark-mode textarea:focus,
+html.dark-mode select:focus {
+  border-color: var(--color-accent-dark) !important;
+  outline: none;
+}
+
+/* Gráficos */
+html.dark-mode .recharts-text {
+  fill: #b0b0b0 !important;
+}
+
+html.dark-mode .recharts-cartesian-axis-tick {
+  fill: #b0b0b0 !important;
+}
+
+html.dark-mode .recharts-tooltip {
+  background-color: rgba(15, 26, 15, 0.95) !important;
+  border: 2px solid var(--color-accent-dark) !important;
+}
+
+/* ConfigPage cards */
+html.dark-mode .config-section {
+  background-color: #0f1a0f !important;
+  border-color: var(--color-accent-dark) !important;
+  color: #e0e0e0;
+}
+
+html.dark-mode .config-section h2 {
+  color: #e0e0e0 !important;
+  border-bottom-color: #1a2a1a !important;
+}
+
+html.dark-mode .status-card {
+  background-color: #0a0f0a !important;
+}
+
+html.dark-mode .status-details {
+  color: #b0b0b0 !important;
+}
+
+html.dark-mode .status-details p {
+  color: #b0b0b0 !important;
+}
+
+html.dark-mode .mesas-info {
+  border-top-color: #1a2a1a !important;
+}
+
+html.dark-mode .mesas-info li::before {
+  color: var(--color-accent-dark) !important;
+}
+
+html.dark-mode .refresh-status-btn {
+  background-color: var(--color-accent-dark) !important;
+  color: #0a0f0a !important;
+}
+
+html.dark-mode .refresh-status-btn:hover {
+  background-color: #00ff00 !important;
+}
+
+html.dark-mode .table-selector label {
+  color: #e0e0e0 !important;
+}
+
+html.dark-mode .table-select {
+  background-color: #0f1a0f !important;
+  border-color: var(--color-accent-dark) !important;
+  color: #e0e0e0 !important;
+}
+
+html.dark-mode .table-select:focus {
+  border-color: #00ff00 !important;
+  box-shadow: 0 0 0 3px rgba(0, 221, 0, 0.2) !important;
+}
+
+html.dark-mode .info-card {
+  background-color: #0a0f0a !important;
+}
+
+html.dark-mode .info-card p {
+  color: #b0b0b0 !important;
+}
+
+html.dark-mode .config-warning {
+  background-color: rgba(0, 221, 0, 0.1) !important;
+  border-color: var(--color-accent-dark) !important;
+  color: #e0e0e0 !important;
+}
+
+html.dark-mode .config-warning p {
+  color: #00dd00 !important;
+}
+
+/* Botones con hover effects */
+html.dark-mode .simulate-btn,
+html.dark-mode .refresh-btn {
+  background-color: #0f1a0f !important;
+  border-color: var(--color-accent-dark) !important;
+  color: #e0e0e0 !important;
+  transition: all 0.3s ease !important;
+}
+
+html.dark-mode .simulate-btn:hover,
+html.dark-mode .refresh-btn:hover {
+  background-color: var(--color-accent-dark) !important;
+  color: #0a0f0a !important;
+  box-shadow: 0 0 20px rgba(0, 221, 0, 0.4) !important;
+  transform: translateY(-2px);
+}
+
+html.dark-mode .simulate-btn:active,
+html.dark-mode .refresh-btn:active {
+  transform: translateY(0);
+}
+
+/* Game cards hover */
+html.dark-mode .game-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 221, 0, 0.25) !important;
+}
+
+/* Botones generales */
+html.dark-mode button {
+  transition: all 0.3s ease !important;
+}
+
+html.dark-mode button:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+/* Selectores */
+html.dark-mode select:hover {
+  border-color: var(--color-accent-dark) !important;
+  box-shadow: 0 0 10px rgba(0, 221, 0, 0.2) !important;
+}
+
+/* Links hover */
+html.dark-mode a:hover {
+  text-shadow: 0 0 10px rgba(0, 221, 0, 0.5) !important;
+}
+
+/* Sidebar items hover */
+html.dark-mode .sidebar a:hover {
+  color: #00ff00 !important;
+  text-shadow: 0 0 8px rgba(0, 221, 0, 0.3) !important;
+}

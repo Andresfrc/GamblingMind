@@ -15,7 +15,9 @@ const PredictionPage = () => {
     chatHistory,
     addChatMessage,
     isLoading,
-    setIsLoading 
+    setIsLoading,
+    addPrediction,
+    updatePredictionResult
   } = useAppContext();
 
   const [simulationCount, setSimulationCount] = useState(0);
@@ -24,19 +26,71 @@ const PredictionPage = () => {
   const [gameImage, setGameImage] = useState('');
   const [lastSimulation, setLastSimulation] = useState(null);
   const [simulationHistory, setSimulationHistory] = useState([]);
+  const [currentPredictionId, setCurrentPredictionId] = useState(null);
   const initializedGameRef = useRef(null);
   const isMountedRef = useRef(true);
+
+  // Evalúa la fuerza de una mano de poker
+  const evaluatePokerHand = useCallback((mano) => {
+    if (!mano || mano.length !== 2) return 'desconocida';
+    
+    const valores = { 'A': 14, 'K': 13, 'Q': 12, 'J': 11 };
+    const cartas = [];
+    
+    for (const carta of mano) {
+      const valorStr = carta.slice(0, -1); // Remover el palo
+      const valor = valores[valorStr] || (parseInt(valorStr) || 0);
+      cartas.push(valor);
+    }
+    
+    // Pareja
+    if (cartas[0] === cartas[1]) {
+      return cartas[0] >= 13 ? 'Premium (pareja alta)' : 'Pareja';
+    }
+    // Cartas altas
+    if (Math.max(...cartas) >= 12) {
+      return 'Cartas altas';
+    }
+    
+    return 'Mano media';
+  }, []);
 
   const getPrediction = useCallback(async () => {
     try {
       setIsLoading(true);
       const response = await api.predict(selectedGame, selectedTable);
       
-      // Solo actualizar si el componente está montado
       if (!isMountedRef.current) return;
       
       if (response.prediccion) {
         setPredictionData(response.prediccion);
+        
+        // Guardar predicción según el juego
+        let predictionValue = '';
+        let probValue = 0;
+        
+        if (selectedGame === 'ruleta') {
+          predictionValue = response.prediccion.probabilidades_color?.rojo > 
+            (response.prediccion.probabilidades_color?.negro || 0) ? 'rojo' : 'negro';
+          probValue = response.prediccion.probabilidades_color?.rojo || 0;
+        } else if (selectedGame === 'blackjack') {
+          predictionValue = response.prediccion.probabilidad_ganar > 50 ? 'ganar' : 'perder';
+          probValue = response.prediccion.probabilidad_ganar || 0;
+        } else if (selectedGame === 'poker') {
+          predictionValue = response.prediccion.fuerza_mano || 'desconocida';
+          probValue = response.prediccion.probabilidad_mejorar || 0;
+        } else if (selectedGame === 'jackpot') {
+          // Para jackpot usamos la tendencia como predicción
+          predictionValue = response.prediccion.tendencia || 'estable';
+          probValue = 50; // Confianza por defecto para tendencias
+        }
+        
+        const predId = addPrediction({
+          prediction: predictionValue,
+          probability: probValue,
+          type: 'prediction'
+        });
+        setCurrentPredictionId(predId);
       } else if (response.error) {
         addChatMessage('assistant', `⚠️ ${response.mensaje || response.error}`);
       }
@@ -56,7 +110,7 @@ const PredictionPage = () => {
         setIsLoading(false);
       }
     }
-  }, [selectedGame, selectedTable, setIsLoading, setPredictionData, addChatMessage]);
+  }, [selectedGame, selectedTable, setIsLoading, setPredictionData, addChatMessage, addPrediction]);
 
   useEffect(() => {
     // Inicializar referencia de montaje
@@ -168,18 +222,34 @@ const PredictionPage = () => {
   }, [predictionData, selectedGame]);
 
   const handleSimulate = useCallback(async () => {
-    if (isLoading) return; // Evitar múltiples clics simultáneos
+    if (isLoading) return;
     
     try {
       setIsLoading(true);
       const result = await api.simulate(selectedGame, selectedTable);
       if (result.resultado) {
-        setLastSimulation(result.resultado);
-        setSimulationHistory(prev => [...prev.slice(-9), result.resultado]);
+        let resultadoConMetadata = { ...result.resultado };
+        
+        // Para poker, calcular fuerza_mano de la simulación
+        if (selectedGame === 'poker' && result.resultado.mano_jugador) {
+          resultadoConMetadata.fuerza_mano = evaluatePokerHand(result.resultado.mano_jugador);
+        }
+        
+        setLastSimulation(resultadoConMetadata);
+        setSimulationHistory(prev => [...prev.slice(-9), resultadoConMetadata]);
         setSimulationCount(prev => prev + 1);
+        
+        // Guardar resultado de simulación en predicción actual
+        if (currentPredictionId) {
+          updatePredictionResult(currentPredictionId, resultadoConMetadata);
+          
+          // Notificación después de un pequeño delay
+          setTimeout(() => {
+            // Simulación completada
+          }, 300);
+        }
       }
       
-      // Obtener nueva predicción después de simular
       await getPrediction();
       addChatMessage('assistant', '✅ Nueva simulación completada');
     } catch (error) {
@@ -188,7 +258,7 @@ const PredictionPage = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedGame, selectedTable, getPrediction, addChatMessage, isLoading]);
+  }, [selectedGame, selectedTable, getPrediction, addChatMessage, isLoading, currentPredictionId, updatePredictionResult, evaluatePokerHand]);
 
   const handleSendMessage = async () => {
     if (!chatInput.trim() || isLoading) return;

@@ -49,12 +49,14 @@ const AnimatedBackground = () => {
       }
 
       draw() {
-        ctx.fillStyle = `rgba(184, 168, 99, ${this.opacity})`;
+        const isDarkMode = document.documentElement.classList.contains('dark-mode');
+        const color = isDarkMode ? 'rgba(0, 221, 0, ' : 'rgba(184, 168, 99, ';
+        ctx.fillStyle = `${color}${this.opacity})`;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
         ctx.shadowBlur = 10;
-        ctx.shadowColor = `rgba(184, 168, 99, ${this.opacity * 0.5})`;
+        ctx.shadowColor = `${color}${this.opacity * 0.5})`;
       }
     }
 
@@ -83,10 +85,13 @@ const AnimatedBackground = () => {
       }
 
       draw() {
-        ctx.strokeStyle = `rgba(184, 168, 99, ${this.opacity})`;
+        const isDarkMode = document.documentElement.classList.contains('dark-mode');
+        const color = isDarkMode ? 'rgba(0, 221, 0, ' : 'rgba(184, 168, 99, ';
+        
+        ctx.strokeStyle = `${color}${this.opacity})`;
         ctx.lineWidth = 1.5;
         ctx.shadowBlur = 5;
-        ctx.shadowColor = `rgba(184, 168, 99, ${this.opacity})`;
+        ctx.shadowColor = `${color}${this.opacity})`;
 
         const currentX = this.x1 + (this.x2 - this.x1) * this.progress;
         const currentY = this.y1 + (this.y2 - this.y1) * this.progress;
@@ -96,13 +101,13 @@ const AnimatedBackground = () => {
         ctx.lineTo(currentX, currentY);
         ctx.stroke();
 
-        ctx.fillStyle = `rgba(184, 168, 99, ${this.opacity * 2})`;
+        ctx.fillStyle = `${color}${this.opacity * 2})`;
         ctx.beginPath();
         ctx.arc(currentX, currentY, 3, 0, Math.PI * 2);
         ctx.fill();
 
         if (this.progress < 0.1) {
-          ctx.fillStyle = `rgba(184, 168, 99, ${this.opacity})`;
+          ctx.fillStyle = `${color}${this.opacity})`;
           ctx.beginPath();
           ctx.arc(this.x1, this.y1, 4, 0, Math.PI * 2);
           ctx.fill();
@@ -132,6 +137,7 @@ const AnimatedBackground = () => {
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+      const isDarkMode = document.documentElement.classList.contains('dark-mode');
       const gradient = ctx.createRadialGradient(
         canvas.width / 2,
         canvas.height / 2,
@@ -140,8 +146,14 @@ const AnimatedBackground = () => {
         canvas.height / 2,
         canvas.width / 2
       );
-      gradient.addColorStop(0, 'rgba(245, 245, 245, 1)');
-      gradient.addColorStop(1, 'rgba(230, 230, 230, 1)');
+      
+      if (isDarkMode) {
+        gradient.addColorStop(0, 'rgba(10, 15, 10, 1)');
+        gradient.addColorStop(1, 'rgba(5, 8, 5, 1)');
+      } else {
+        gradient.addColorStop(0, 'rgba(245, 245, 245, 1)');
+        gradient.addColorStop(1, 'rgba(230, 230, 230, 1)');
+      }
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -157,7 +169,8 @@ const AnimatedBackground = () => {
         particle.draw();
       });
 
-      ctx.strokeStyle = 'rgba(184, 168, 99, 0.1)';
+      const isDarkModeLines = document.documentElement.classList.contains('dark-mode');
+      ctx.strokeStyle = isDarkModeLines ? 'rgba(0, 221, 0, 0.1)' : 'rgba(184, 168, 99, 0.1)';
       ctx.lineWidth = 0.5;
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {

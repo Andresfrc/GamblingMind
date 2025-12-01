@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 const InteractiveEye = ({ size = 80 }) => {
   const [pupilPosition, setPupilPosition] = useState({ x: 0, y: 0 });
   const [isBlinking, setIsBlinking] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const eyeRef = useRef(null);
   const isBlinkingRef = useRef(false);
 
@@ -12,6 +13,21 @@ const InteractiveEye = ({ size = 80 }) => {
   useEffect(() => {
     isBlinkingRef.current = isBlinking;
   }, [isBlinking]);
+
+  useEffect(() => {
+    // Detectar dark mode
+    const checkDarkMode = () => {
+      setIsDarkMode(document.documentElement.classList.contains('dark-mode'));
+    };
+    
+    checkDarkMode();
+    
+    // Observer para cambios de clase
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const handleMouseMove = (e) => {
@@ -176,32 +192,15 @@ const InteractiveEye = ({ size = 80 }) => {
           opacity="0.6"
         />
 
-        {/* Parpadeo: dos párpados (top y bottom) que escalan para cerrarse */}
-        <rect
-          x="0"
-          y="0"
-          width="100"
-          height="50"
-          fill="white"
+        {/* Parpadeo: círculo oscuro que cubre cuando parpadea */}
+        <circle
+          cx="50"
+          cy="50"
+          r="42"
+          fill={isDarkMode ? "#0a0f0a" : "#2c2c2c"}
+          opacity={isBlinking ? "1" : "0"}
           style={{
-            transformOrigin: "50% 100%",
-            transformBox: "fill-box",
-            transform: isBlinking ? "scaleY(1)" : "scaleY(0)",
-            transition: "transform 120ms ease-in-out",
-            pointerEvents: "none",
-          }}
-        />
-        <rect
-          x="0"
-          y="50"
-          width="100"
-          height="50"
-          fill="white"
-          style={{
-            transformOrigin: "50% 0%",
-            transformBox: "fill-box",
-            transform: isBlinking ? "scaleY(1)" : "scaleY(0)",
-            transition: "transform 120ms ease-in-out",
+            transition: "opacity 120ms ease-in-out",
             pointerEvents: "none",
           }}
         />

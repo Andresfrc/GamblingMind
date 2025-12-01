@@ -4,13 +4,14 @@ import InteractiveEye from './InteractiveEye';
 import '../styles/Sidebar.css';
 
 // Importación de iconos modernos
-import { Home, Settings, Wallet, User } from "lucide-react";
+import { Home, Settings, Wallet, User, Activity } from "lucide-react";
 
 const Sidebar = ({ isOpen, onClose }) => {
   const { currentPage, navigateTo } = useAppContext();
 
   const menuItems = [
     { id: 'home', icon: <Home size={22} />, label: 'Inicio' },
+    { id: 'stats', icon: <Activity size={22} />, label: 'Estadísticas' },
     { id: 'config', icon: <Settings size={22} />, label: 'Configuración' },
     { id: 'predicts', icon: <Wallet size={22} />, label: 'Predicts' }
   ];
