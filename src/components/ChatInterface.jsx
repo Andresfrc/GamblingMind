@@ -12,7 +12,7 @@ const ChatInterface = ({
 }) => {
   const messagesEndRef = useRef(null);
 
-  // Solo efecto para scroll, no lógica de negocio
+ 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);

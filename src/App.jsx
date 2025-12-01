@@ -49,7 +49,9 @@ function App() {
       <DarkModeToggle />
       <MobileMenuToggle isOpen={sidebarOpen} onToggle={() => setSidebarOpen(!sidebarOpen)} />
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      <div className="main-content">{renderPage()}</div>
+      <div className={`main-content page-transition page-${currentPage}`}>
+        {renderPage()}
+      </div>
     </div>
   );
 }

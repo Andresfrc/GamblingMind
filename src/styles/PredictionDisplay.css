@@ -303,7 +303,7 @@
 /* Stats Grid */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
   gap: 10px;
 }
 
@@ -315,7 +315,7 @@
 }
 
 .stat-item.large {
-  grid-column: span 2;
+  grid-column: 1 / -1;
 }
 
 .stat-label {

@@ -1,7 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import AccuracyBadge from './AccuracyBadge';
+import { checkPredictionAccuracy, saveAccuracyRecord, getAccuracyStats } from '../utils/predictionAccuracy';
 import '../styles/PredictionDisplay.css';
 
 const PredictionDisplay = ({ game, prediction, lastSimulation, simulationHistory }) => {
+  const [accuracy, setAccuracy] = useState(null);
+  const [stats, setStats] = useState(null);
+
+  // Verificar predicción y guardar en histórico
+  useEffect(() => {
+    if (!prediction || !lastSimulation) {
+      setAccuracy(null);
+      return;
+    }
+
+    const result = checkPredictionAccuracy(game, prediction, lastSimulation);
+    if (result) {
+      setAccuracy(result);
+      saveAccuracyRecord(game, result);
+      const newStats = getAccuracyStats(game);
+      setStats(newStats);
+    }
+  }, [lastSimulation, prediction, game]);
+
   if (!prediction && !lastSimulation) return null;
 
   const renderRuletaDisplay = () => (
@@ -246,6 +267,8 @@ const PredictionDisplay = ({ game, prediction, lastSimulation, simulationHistory
         {game === 'blackjack' && renderBlackjackDisplay()}
         {game === 'poker' && renderPokerDisplay()}
         {game === 'jackpot' && renderJackpotDisplay()}
+        
+        {accuracy && <AccuracyBadge isCorrect={accuracy.isCorrect} reason={accuracy.reason} stats={stats} />}
       </div>
     </div>
   );

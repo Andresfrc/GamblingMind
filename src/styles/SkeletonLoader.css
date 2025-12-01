@@ -1,0 +1,84 @@
+.skeleton-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+.skeleton-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  background: linear-gradient(
+    90deg,
+    rgba(200, 200, 200, 0.3) 0%,
+    rgba(220, 220, 220, 0.3) 50%,
+    rgba(200, 200, 200, 0.3) 100%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+  border-radius: 12px;
+  border: 1px solid rgba(200, 200, 200, 0.2);
+  min-height: 150px;
+}
+
+.skeleton-header {
+  height: 24px;
+  border-radius: 6px;
+  background: rgba(150, 150, 150, 0.3);
+  margin-bottom: 8px;
+}
+
+.skeleton-line {
+  height: 16px;
+  border-radius: 4px;
+  background: rgba(150, 150, 150, 0.2);
+}
+
+.skeleton-line.short {
+  width: 60%;
+}
+
+.skeleton-line.full {
+  width: 100%;
+  height: 20px;
+}
+
+.skeleton-details {
+  padding: 20px;
+  background: linear-gradient(
+    90deg,
+    rgba(200, 200, 200, 0.3) 0%,
+    rgba(220, 220, 220, 0.3) 50%,
+    rgba(200, 200, 200, 0.3) 100%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+  border-radius: 12px;
+  border: 1px solid rgba(200, 200, 200, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Dark mode */
+html.dark-mode .skeleton-card,
+html.dark-mode .skeleton-details {
+  background: linear-gradient(
+    90deg,
+    rgba(100, 100, 100, 0.2) 0%,
+    rgba(120, 120, 120, 0.2) 50%,
+    rgba(100, 100, 100, 0.2) 100%
+  );
+  background-size: 1000px 100%;
+  border-color: rgba(100, 100, 100, 0.2);
+}
+
+html.dark-mode .skeleton-header {
+  background: rgba(80, 80, 80, 0.3);
+}
+
+html.dark-mode .skeleton-line {
+  background: rgba(80, 80, 80, 0.2);
+}

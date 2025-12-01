@@ -29,6 +29,13 @@ const InteractiveEye = ({ size = 80 }) => {
     return () => observer.disconnect();
   }, []);
 
+  const handleClick = () => {
+    setIsBlinking(true);
+    setTimeout(() => {
+      setIsBlinking(false);
+    }, 160);
+  };
+
   useEffect(() => {
     const handleMouseMove = (e) => {
       if (!eyeRef.current || isBlinkingRef.current) return;
@@ -78,6 +85,7 @@ const InteractiveEye = ({ size = 80 }) => {
   return (
     <div
       ref={eyeRef}
+      onClick={handleClick}
       style={{
         width: size,
         height: size,
@@ -103,9 +111,9 @@ const InteractiveEye = ({ size = 80 }) => {
             </feMerge>
           </filter>
           <linearGradient id="irisGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#d4c089" />
-            <stop offset="50%" stopColor="#b8a863" />
-            <stop offset="100%" stopColor="#8b7355" />
+            <stop offset="0%" stopColor={isDarkMode ? "#00c872" : "#d4c089"} />
+            <stop offset="50%" stopColor={isDarkMode ? "#00b84d" : "#b8a863"} />
+            <stop offset="100%" stopColor={isDarkMode ? "#009933" : "#8b7355"} />
           </linearGradient>
         </defs>
 
@@ -160,7 +168,7 @@ const InteractiveEye = ({ size = 80 }) => {
           cy={50 + pupilPosition.y}
           r="16"
           fill="none"
-          stroke="#8b7355"
+          stroke={isDarkMode ? "#009933" : "#8b7355"}
           strokeWidth="0.5"
           opacity="0.4"
         />

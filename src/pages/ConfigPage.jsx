@@ -2,6 +2,7 @@ import React from 'react';
 import { useAppContext } from '../context/useAppContext';
 import { useBackend } from '../hooks/useBackend';
 import AnimatedBackground from '../components/AnimatedBackground';
+import SkeletonLoader from '../components/SkeletonLoader';
 import '../styles/ConfigPage.css';
 
 const ConfigPage = () => {
@@ -22,7 +23,7 @@ const ConfigPage = () => {
         <div className="config-section">
           <h2>Estado del Backend</h2>
           {loading ? (
-            <p>Verificando conexión...</p>
+            <SkeletonLoader count={1} variant="details" />
           ) : (
             <div className="status-card">
               <div className={`status-indicator ${isOnline ? 'online' : 'offline'}`}>
