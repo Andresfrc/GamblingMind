@@ -1,0 +1,295 @@
+/* registro.css - Estilos para página de registro estilo GamblingMind */
+
+/* Body y fondo general */
+.body-neon {
+    background: linear-gradient(135deg, #c5c5c5 0%, #e8e8e8 50%, #c5c5c5 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Navbar */
+.main-navbar {
+    background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%) !important;
+    padding: 15px 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.navbar-brand {
+    color: #b8a875 !important;
+    font-size: 1.5rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.nav-link {
+    color: #ffffff !important;
+    font-size: 1rem;
+    padding: 8px 15px !important;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: #b8a875 !important;
+}
+
+/* Contenedor del formulario */
+.contact-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+/* Card del registro */
+.neon-card,
+.card {
+    background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+    border: none;
+    border-radius: 20px;
+    max-width: 550px;
+    width: 100%;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    padding: 40px !important;
+}
+
+/* Título */
+.neon-text,
+.text-center {
+    color: #2d2d2d;
+    font-weight: bold;
+}
+
+h2.neon-text {
+    font-size: 2rem;
+    letter-spacing: 2px;
+    margin-bottom: 30px;
+}
+
+/* Labels del formulario */
+.form-label.neon-text {
+    color: #2d2d2d;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* Inputs del formulario */
+.neon-input,
+.form-control {
+    background-color: transparent !important;
+    border: none !important;
+    border-bottom: 2px solid #b8a875 !important;
+    border-radius: 0 !important;
+    padding: 15px 10px !important;
+    font-size: 1rem;
+    color: #2d2d2d !important;
+    transition: border-color 0.3s ease;
+    box-shadow: none !important;
+}
+
+.neon-input:focus,
+.form-control:focus {
+    background-color: transparent !important;
+    border-bottom: 2px solid #9a8960 !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.neon-input::placeholder,
+.form-control::placeholder {
+    color: #888 !important;
+    font-weight: 400;
+    opacity: 0.8;
+}
+
+/* Select dropdown */
+select.neon-input,
+select.form-control {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23b8a875' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 35px !important;
+}
+
+select.neon-input option,
+select.form-control option {
+    background-color: #ffffff;
+    color: #2d2d2d;
+    padding: 10px;
+}
+
+/* Botón "Registrar" (dorado/beige) */
+.btn-neon-blue {
+    background: linear-gradient(135deg, #b8a875 0%, #d4c394 100%) !important;
+    color: white !important;
+    border: none !important;
+    padding: 15px !important;
+    font-size: 1.1rem !important;
+    font-weight: bold !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(184, 168, 117, 0.3);
+}
+
+.btn-neon-blue:hover {
+    background: linear-gradient(135deg, #a59668 0%, #c2b185 100%) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(184, 168, 117, 0.5);
+}
+
+/* Links */
+.neon-link {
+    color: #b8a875;
+    text-decoration: underline;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.neon-link:hover {
+    color: #9a8960;
+    text-decoration: underline;
+}
+
+/* Alertas de éxito */
+.alert-success {
+    background-color: #d1e7dd !important;
+    border: 1px solid #badbcc !important;
+    color: #0f5132 !important;
+    border-radius: 8px;
+    font-weight: 500;
+    padding: 15px;
+}
+
+.alert-success .neon-link {
+    color: #0a3622;
+    font-weight: bold;
+}
+
+.alert-success .neon-link:hover {
+    color: #052e1a;
+}
+
+/* Footer */
+.neon-footer,
+.footer-style {
+    background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+    color: white;
+    padding: 30px 0;
+    margin-top: auto;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.footer-style .neon-text {
+    color: #ffffff;
+}
+
+.footer-style h5 {
+    color: #b8a875;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+}
+
+.footer-style p {
+    color: #ffffff;
+    font-size: 0.95rem;
+    line-height: 1.8;
+    margin: 0;
+}
+
+/* Iconos sociales */
+.list-inline {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    padding: 0;
+    margin: 10px 0 0 0;
+    list-style: none;
+}
+
+.list-inline li {
+    display: inline-block;
+}
+
+.list-inline img {
+    width: 35px;
+    height: 35px;
+    transition: transform 0.3s ease, filter 0.3s ease;
+    filter: grayscale(0%);
+}
+
+.list-inline img:hover {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+}
+
+/* Márgenes y espaciado */
+.mb-3 {
+    margin-bottom: 1.5rem !important;
+}
+
+.mt-5 {
+    margin-top: 3rem !important;
+}
+
+.w-100 {
+    width: 100% !important;
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .neon-card,
+    .card {
+        padding: 30px !important;
+        margin: 20px;
+    }
+    
+    h2.neon-text {
+        font-size: 1.6rem;
+    }
+    
+    .btn-neon-blue {
+        font-size: 1rem !important;
+        padding: 12px !important;
+    }
+    
+    .navbar-brand {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .contact-container {
+        padding: 20px 10px;
+    }
+    
+    .neon-card,
+    .card {
+        padding: 25px 20px !important;
+    }
+    
+    h2.neon-text {
+        font-size: 1.4rem;
+        letter-spacing: 1px;
+    }
+    
+    .form-label.neon-text {
+        font-size: 0.95rem;
+    }
+}
