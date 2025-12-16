@@ -8,9 +8,11 @@ CREATE TABLE usuario (
   nombres VARCHAR(40),
   documento VARCHAR(20),
   telefono VARCHAR(20),
-  correo VARCHAR(40),
+  correo VARCHAR(100),
   contrasena VARCHAR(255),
-  PRIMARY KEY (id_usuario)
+  PRIMARY KEY (id_usuario),
+  UNIQUE KEY (correo),
+  UNIQUE KEY (documento)
 );
 
 -- Insertar datos de usuarios

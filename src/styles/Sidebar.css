@@ -187,8 +187,17 @@
 }
 
 .sidebar-profile {
-  padding: 15px 10px;
+  padding: 0;
   border-top: 2px solid #b8a863;
+  display: flex;
+  align-items: center;
+}
+
+.profile-btn {
+  width: 100%;
+  padding: 15px 10px;
+  background: transparent;
+  border: none;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -197,7 +206,7 @@
   border-radius: 12px;
 }
 
-.sidebar-profile:hover {
+.profile-btn:hover {
   background: linear-gradient(90deg, transparent, rgba(184, 168, 99, 0.1));
   transform: translateX(5px);
 }
@@ -215,7 +224,7 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.sidebar-profile:hover .profile-icon {
+.profile-btn:hover .profile-icon {
   transform: scale(1.1);
   box-shadow: 0 4px 12px rgba(184, 168, 99, 0.3);
 }

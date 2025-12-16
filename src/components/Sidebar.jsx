@@ -47,10 +47,16 @@ const Sidebar = ({ isOpen, onClose }) => {
       </div>
 
       <div className="sidebar-profile">
-        <div className="profile-icon">
-          <User size={24} />
-        </div>
-        <span className="profile-label">Perfil</span>
+        <button 
+          className="profile-btn"
+          onClick={() => window.open('http://localhost/Form/vista/perfil.php', '_blank')}
+          title="Abrir login/perfil"
+        >
+          <div className="profile-icon">
+            <User size={24} />
+          </div>
+          <span className="profile-label">Perfil</span>
+        </button>
       </div>
     </div>
   );
