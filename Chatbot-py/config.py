@@ -3,10 +3,15 @@ CONFIG.PY
 Configuración centralizada del sistema
 """
 
+import os
+from dotenv import load_dotenv
+
+# Cargar variables de entorno desde .env
+load_dotenv()
 
 USE_GROQ = True
-GROQ_API_KEY = "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"
-GROQ_MODEL = "llama-3.3-70b-versatile"  # ← MODELO ACTUALIZADO
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+GROQ_MODEL = "mixtral-8x7b-32768"
 
 
 USE_HUGGINGFACE = False
