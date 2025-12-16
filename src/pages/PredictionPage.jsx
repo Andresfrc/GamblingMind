@@ -258,7 +258,8 @@ const PredictionPage = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedGame, selectedTable, getPrediction, addChatMessage, isLoading, currentPredictionId, updatePredictionResult, evaluatePokerHand]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedGame, selectedTable, getPrediction, addChatMessage, currentPredictionId, updatePredictionResult, evaluatePokerHand]);
 
   const handleSendMessage = async () => {
     if (!chatInput.trim() || isLoading) return;
@@ -299,7 +300,6 @@ const PredictionPage = () => {
   if (!selectedGame) {
     return (
       <div className="prediction-page">
-        <AnimatedBackground />
         <div className="no-game-selected">
           <p>Por favor, selecciona un juego primero.</p>
         </div>
@@ -309,7 +309,6 @@ const PredictionPage = () => {
 
   return (
     <div className="prediction-page">
-      <AnimatedBackground />
       
       <div className="prediction-content">
         <div className="prediction-header">

@@ -3,9 +3,8 @@ import Toast from '../components/Toast';
 
 let toastId = 0;
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const ToastContext = React.createContext();
-
-export const useToast = () => React.useContext(ToastContext);
 
 export const ToastProvider = ({ children }) => {
   const [toasts, setToasts] = useState([]);

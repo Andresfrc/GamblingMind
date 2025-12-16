@@ -1,8 +1,20 @@
-import React, { useState, useMemo } from 'react';
-import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import React, { useState, useMemo, Suspense, lazy } from 'react';
 import { useAppContext } from '../context/useAppContext';
 import AnimatedBackground from '../components/AnimatedBackground';
 import '../styles/StatsPage.css';
+
+// Lazy-load Recharts para mejorar performance
+const RechartsDynamic = lazy(() => 
+  import('recharts').then(mod => ({
+    default: () => {
+      const { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } = mod;
+      return { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer };
+    }
+  }))
+);
+
+// Importar directamente por ahora (puede cambiar a lazy si es necesario)
+import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const COLORS = ['#2e7d32', '#c62828', '#ffc107'];
 const GAME_COLORS = {
@@ -163,7 +175,6 @@ const StatsPage = () => {
   if (!predictions) {
     return (
       <div className="stats-page">
-        <AnimatedBackground />
         <div className="stats-content">
           <h1 className="stats-title"> Estadísticas de Predicciones</h1>
           <p className="no-data">Cargando datos...</p>
@@ -174,7 +185,6 @@ const StatsPage = () => {
 
   return (
     <div className="stats-page">
-      <AnimatedBackground />
       <div className="stats-content">
         <h1 className="stats-title"> Estadísticas de Predicciones</h1>
 

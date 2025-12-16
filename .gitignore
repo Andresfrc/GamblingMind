@@ -11,6 +11,8 @@ node_modules
 dist
 dist-ssr
 *.local
+venv/
+Chatbot-py/venv/
 
 # Editor directories and files
 .vscode/*

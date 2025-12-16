@@ -7,15 +7,16 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from core.predictor_casino import PredictorCasino
 from api.simulador import SimuladorCasino
-from chatbot.ollama_chat import ChatbotOllama
+from chatbot import get_chatbot
 from utils.helpers import validar_juego, log_evento
 import os
+import threading
 
 app = Flask(__name__)
 # Restringir CORS solo al frontend local
 CORS(app, origins=[
-    "http://localhost:5173",      # Vite dev server (default)
-    "http://localhost:3000",      # Si usa otro puerto
+    "http://localhost:5173",
+    "http://localhost:3000",
     "http://127.0.0.1:5173",
     "http://127.0.0.1:3000"
 ])
@@ -25,6 +26,7 @@ predictor = None
 simulador = None
 chatbot = None
 historial_chat = []
+agente_activo = None
 
 def init_sistema():
     """Inicializa todos los componentes al arrancar el servidor"""
@@ -33,10 +35,14 @@ def init_sistema():
     try:
         predictor = PredictorCasino(ventana_historica=100)
         simulador = SimuladorCasino()
-        chatbot = ChatbotOllama()
+        chatbot = get_chatbot()
         
         print("✅ Predictor inicializado")
         print("✅ Simulador inicializado")
+        
+        # Verificar chatbot
+        ok, mensaje = chatbot.verificar_conexion()
+        print(mensaje)
         
         mesas_ruleta = simulador.obtener_mesas_disponibles('ruleta')
         print(f"📍 Mesas de ruleta: {len(mesas_ruleta)}")
@@ -52,16 +58,20 @@ def index():
     """Endpoint raíz - información de la API"""
     return jsonify({
         'nombre': 'Casino Predictor API',
-        'version': '1.0.0',
+        'version': '2.0.0',
         'advertencia': 'Sistema educativo - NO usar para apuestas reales',
+        'modo': 'Agente Autónomo con IA',
         'endpoints': {
-            'health': '/health',
-            'games': '/games',
-            'tables': '/tables/<juego>',
-            'simulate': '/simulate',
-            'predict': '/predict',
-            'chat': '/chat',
-            'stats': '/stats'
+            'health': 'GET /health',
+            'games': 'GET /games',
+            'tables': 'GET /tables/<juego>',
+            'simulate': 'POST /simulate',
+            'predict': 'POST /predict',
+            'chat': 'POST /chat',
+            'stats': 'GET /stats',
+            'agente_iniciar': 'POST /agente/iniciar',
+            'agente_estado': 'GET /agente/estado',
+            'agente_detener': 'POST /agente/detener'
         }
     })
 
@@ -69,15 +79,20 @@ def index():
 @app.route('/health', methods=['GET'])
 def health():
     """Endpoint para verificar estado del servidor"""
-    ollama_ok = False
+    chatbot_ok = False
+    chatbot_tipo = "Desconocido"
+    
     if chatbot:
-        ollama_ok, _ = chatbot.verificar_conexion()
+        chatbot_ok, mensaje = chatbot.verificar_conexion()
+        chatbot_tipo = chatbot.__class__.__name__
     
     return jsonify({
         'status': 'ok',
         'predictor_loaded': predictor is not None,
         'simulador_loaded': simulador is not None,
-        'ollama_available': ollama_ok,
+        'chatbot_available': chatbot_ok,
+        'chatbot_type': chatbot_tipo,
+        'agente_activo': agente_activo is not None,
         'mesas_activas': {
             'ruleta': len(simulador.obtener_mesas_disponibles('ruleta')) if simulador else 0,
             'blackjack': len(simulador.obtener_mesas_disponibles('blackjack')) if simulador else 0,
@@ -205,7 +220,6 @@ def predict():
             prediccion = predictor.predecir_blackjack(cartas_visibles)
             
         elif juego == 'poker':
-            # Simular mano para obtener datos
             mano_data = simulador.simular_mano_poker(mesa)
             prediccion = predictor.predecir_poker(
                 mano_data['mano_jugador'],
@@ -246,18 +260,15 @@ def chat():
         return jsonify({'error': 'Mensaje vacío'}), 400
     
     try:
-        # Detectar si pregunta por un juego específico con contexto
         contexto_prediccion = None
         
         # Palabras clave por juego
         palabras_ruleta = ['ruleta', 'numero', 'rojo', 'negro', 'color']
         palabras_blackjack = ['blackjack', 'carta', 'conteo', 'mazo']
-        palabras_poker = ['poker', 'mano', 'texas']
-        palabras_jackpot = ['jackpot', 'premio', 'progresivo']
         
         message_lower = message.lower()
         
-        # Intentar inferir contexto si menciona un juego
+        # Intentar inferir contexto
         if any(p in message_lower for p in palabras_ruleta):
             if simulador:
                 historial = simulador.obtener_historial_ruleta('table_1', 50)
@@ -270,7 +281,7 @@ def chat():
                 if len(cartas) >= 10:
                     contexto_prediccion = predictor.predecir_blackjack(cartas)
         
-        # Generar respuesta con el chatbot
+        # Generar respuesta
         response = chatbot.generar_respuesta(
             message,
             contexto_prediccion=contexto_prediccion,
@@ -281,21 +292,20 @@ def chat():
         historial_chat.append({'rol': 'Usuario', 'contenido': message})
         historial_chat.append({'rol': 'Asistente', 'contenido': response})
         
-        # Mantener historial limitado
         if len(historial_chat) > 10:
             historial_chat = historial_chat[-10:]
         
         return jsonify({
             'response': response,
             'contexto_detectado': contexto_prediccion is not None,
-            'juego_detectado': contexto_prediccion.get('juego') if (contexto_prediccion and isinstance(contexto_prediccion, dict)) else None
+            'juego_detectado': contexto_prediccion.get('juego') if contexto_prediccion else None
         })
         
     except Exception as e:
         print(f"Error en /chat: {e}")
         return jsonify({
             'error': str(e),
-            'response': f'⚠️ Ocurrió un error al procesar tu pregunta: {str(e)}'
+            'response': f'⚠️ Error al procesar pregunta: {str(e)}'
         }), 500
 
 
@@ -317,12 +327,84 @@ def get_stats():
             'mesas': mesas
         }
         
-        # Agregar estadísticas específicas por juego
         if juego == 'ruleta' and mesas:
             mesa_stats = simulador.obtener_estadisticas_mesa(juego, mesas[0])
             stats['mesas_por_juego'][juego]['ejemplo_stats'] = mesa_stats
     
     return jsonify({'estadisticas': stats})
+
+
+@app.route('/agente/iniciar', methods=['POST'])
+def iniciar_agente():
+    """Inicia el agente autónomo en segundo plano"""
+    global agente_activo
+    
+    if agente_activo is not None:
+        return jsonify({
+            'error': 'Agente ya está activo',
+            'mensaje': 'Detén el agente actual primero'
+        }), 400
+    
+    from core.agente_autonomo import AgenteAutonomo
+    
+    data = request.json or {}
+    duracion = data.get('duracion', 300)
+    
+    def ejecutar_agente_background():
+        global agente_activo
+        agente = AgenteAutonomo()
+        agente_activo = agente
+        agente.iniciar_bucle_autonomo(duracion_segundos=duracion)
+        agente_activo = None
+    
+    thread = threading.Thread(target=ejecutar_agente_background, daemon=True)
+    thread.start()
+    
+    return jsonify({
+        'success': True,
+        'mensaje': f'Agente iniciado por {duracion} segundos',
+        'duracion': duracion
+    })
+
+
+@app.route('/agente/estado', methods=['GET'])
+def estado_agente():
+    """Retorna el estado del agente"""
+    global agente_activo
+    
+    if agente_activo is None:
+        return jsonify({
+            'activo': False,
+            'experimentos': 0,
+            'hallazgos': 0,
+            'mensaje': 'Agente no activo'
+        })
+    
+    return jsonify({
+        'activo': True,
+        'experimentos': agente_activo.experimentos_realizados,
+        'hallazgos': agente_activo.estadisticas['hallazgos_relevantes'],
+        'precision': agente_activo.estadisticas['precision_promedio']
+    })
+
+
+@app.route('/agente/detener', methods=['POST'])
+def detener_agente():
+    """Detiene el agente autónomo"""
+    global agente_activo
+    
+    if agente_activo is None:
+        return jsonify({
+            'error': 'No hay agente activo',
+            'mensaje': 'El agente no está corriendo'
+        }), 400
+    
+    agente_activo.activo = False
+    
+    return jsonify({
+        'success': True,
+        'mensaje': 'Agente detenido'
+    })
 
 
 @app.route('/reset/<juego>/<mesa>', methods=['POST'])
@@ -350,7 +432,7 @@ def reset_table(juego, mesa):
 
 if __name__ == '__main__':
     print("\n" + "="*60)
-    print("🚀 INICIANDO SERVIDOR BACKEND FLASK - CASINO PREDICTOR")
+    print("🚀 CASINO PREDICTOR - MODO AGENTE AUTÓNOMO CON IA")
     print("="*60)
     print("⚠️  ADVERTENCIA: Sistema educativo - NO usar para apuestas reales")
     print("="*60)
@@ -358,16 +440,6 @@ if __name__ == '__main__':
     # Inicializar sistema
     if not init_sistema():
         print("\n⚠️ ADVERTENCIA: El servidor arrancará pero sin funcionalidad completa")
-    
-    # Verificar Ollama
-    if chatbot:
-        ok, mensaje = chatbot.verificar_conexion()
-        print(f"\n{mensaje}")
-        if not ok:
-            print("\n💡 Para habilitar el chat con IA:")
-            print("   1. Abre otra terminal")
-            print("   2. Ejecuta: ollama serve")
-            print("   3. Descarga el modelo: ollama pull llama3.2:3b")
     
     print("\n" + "="*60)
     print("✅ SERVIDOR BACKEND LISTO")
@@ -377,11 +449,12 @@ if __name__ == '__main__':
     print("   • GET  /              - Info de la API")
     print("   • GET  /health        - Estado del servidor")
     print("   • GET  /games         - Lista de juegos")
-    print("   • GET  /tables/<game> - Mesas de un juego")
     print("   • POST /simulate      - Simular jugada")
     print("   • POST /predict       - Obtener predicción")
     print("   • POST /chat          - Chat con IA")
-    print("   • GET  /stats         - Estadísticas")
+    print("   • POST /agente/iniciar - Iniciar agente")
+    print("   • GET  /agente/estado  - Estado del agente")
+    print("   • POST /agente/detener - Detener agente")
     print("\n📝 Para detener el servidor: Ctrl+C")
     print("="*60 + "\n")
     

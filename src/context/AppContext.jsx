@@ -46,7 +46,11 @@ const AppProvider = ({ children }) => {
       table: selectedTable,
       ...prediction
     };
-    setPredictions(prev => [...prev, newPrediction]);
+    setPredictions(prev => {
+      const updated = [...prev, newPrediction];
+      // Mantener solo las últimas 100 predicciones
+      return updated.slice(-100);
+    });
     return newPrediction.id;
   };
 

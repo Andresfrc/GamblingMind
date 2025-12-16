@@ -1,13 +1,13 @@
 """
 MAIN.PY - Script Principal (CLI)
-Interfaz de línea de comandos para el predictor de casino
+Interfaz de línea de comandos para el predictor de casino con Agente Autónomo
 """
 
 import os
 import sys
 from core.predictor_casino import PredictorCasino
 from api.simulador import SimuladorCasino
-from chatbot.ollama_chat import ChatbotOllama
+from chatbot import get_chatbot
 from utils.helpers import formatear_prediccion, log_evento
 
 
@@ -17,13 +17,13 @@ class CasinoPredictorCLI:
     def __init__(self):
         self.predictor = PredictorCasino(ventana_historica=100)
         self.simulador = SimuladorCasino()
-        self.chatbot = ChatbotOllama()
+        self.chatbot = get_chatbot()
         self.historial_chat = []
         
     def mostrar_menu_principal(self):
         """Muestra el menú principal"""
         print("\n" + "="*60)
-        print("🎰 CASINO PREDICTOR - Sistema de Análisis Estadístico")
+        print("🎰 CASINO PREDICTOR - Sistema de Análisis con IA")
         print("="*60)
         print("⚠️  PROYECTO EDUCATIVO - NO USAR PARA APUESTAS REALES")
         print("="*60)
@@ -32,9 +32,10 @@ class CasinoPredictorCLI:
         print("2. 🃏 Blackjack")
         print("3. 🎴 Póker Texas Hold'em")
         print("4. 💰 Jackpot Progresivo")
-        print("5. 💬 Chat con IA (Ollama)")
+        print("5. 💬 Chat con IA")
         print("6. 📊 Ver estadísticas generales")
-        print("7. ❌ Salir")
+        print("7. 🤖 MODO AGENTE AUTÓNOMO")
+        print("8. ❌ Salir")
         print("="*60)
     
     def menu_ruleta(self):
@@ -42,7 +43,6 @@ class CasinoPredictorCLI:
         print("\n🎡 RULETA EUROPEA")
         print("="*40)
         
-        # Mostrar mesas disponibles
         mesas = self.simulador.obtener_mesas_disponibles('ruleta')
         print(f"Mesas disponibles: {', '.join(mesas)}")
         
@@ -106,7 +106,7 @@ class CasinoPredictorCLI:
                 print(f"\n🎴 Tu mano: {' '.join(mano['mano_jugador'])} = {mano['valor_jugador']}")
                 print(f"🎴 Dealer muestra: {mano['mano_dealer'][0]}")
                 print(f"📊 Resultado: {mano['resultado'].replace('_', ' ').upper()}")
-                print(f"🎰 Cartas restantes en el mazo: {mano['cartas_restantes']}")
+                print(f"🎰 Cartas restantes: {mano['cartas_restantes']}")
                 
             elif opcion == '2':
                 cartas_visibles = self.simulador.obtener_cartas_visibles_blackjack(mesa)
@@ -119,7 +119,7 @@ class CasinoPredictorCLI:
             elif opcion == '3':
                 cartas_visibles = self.simulador.obtener_cartas_visibles_blackjack(mesa)
                 if len(cartas_visibles) < 10:
-                    print("⚠️ Se necesitan al menos 10 cartas vistas para predicción")
+                    print("⚠️ Se necesitan al menos 10 cartas vistas")
                     continue
                 
                 prediccion = self.predictor.predecir_blackjack(cartas_visibles)
@@ -203,19 +203,16 @@ class CasinoPredictorCLI:
     
     def menu_chat(self):
         """Menú de chat con IA"""
-        print("\n💬 CHAT CON IA (OLLAMA)")
+        print("\n💬 CHAT CON IA")
         print("="*40)
         
-        # Verificar Ollama
+        # Verificar chatbot
         ok, mensaje = self.chatbot.verificar_conexion()
         print(mensaje)
         
         if not ok:
-            print("\n⚠️ No se puede iniciar el chat sin Ollama.")
-            print("💡 Instrucciones:")
-            print("   1. Abre otra terminal")
-            print("   2. Ejecuta: ollama serve")
-            print("   3. Descarga el modelo: ollama pull llama3.2:3b")
+            print("\n⚠️ No se puede iniciar el chat.")
+            print("💡 Verifica tu configuración en config.py")
             input("\nPresiona Enter para volver...")
             return
         
@@ -246,7 +243,7 @@ class CasinoPredictorCLI:
                 self.historial_chat = self.historial_chat[-10:]
     
     def mostrar_estadisticas(self):
-        """Muestra estadísticas generales del simulador"""
+        """Muestra estadísticas generales"""
         print("\n📊 ESTADÍSTICAS GENERALES")
         print("="*40)
         
@@ -254,9 +251,43 @@ class CasinoPredictorCLI:
             mesas = self.simulador.obtener_mesas_disponibles(juego)
             print(f"\n{juego.upper()}: {len(mesas)} mesas activas")
             
-            for mesa in mesas[:2]:  # Mostrar primeras 2 mesas
+            for mesa in mesas[:2]:
                 stats = self.simulador.obtener_estadisticas_mesa(juego, mesa)
-                print(f"  • {mesa}: {stats}")
+                print(f"• {mesa}: {stats}")
+    
+    def menu_agente_autonomo(self):
+        """Menú para el agente autónomo"""
+        from core.agente_autonomo import AgenteAutonomo
+        
+        print("\n🤖 MODO AGENTE AUTÓNOMO")
+        print("="*40)
+        print("El agente ejecutará experimentos de forma autónoma")
+        print("y reportará hallazgos interesantes automáticamente.")
+        print()
+        
+        try:
+            duracion = input("Duración en segundos (Enter para 60): ").strip()
+            duracion = int(duracion) if duracion else 60
+            
+            print(f"\n🚀 Iniciando agente por {duracion} segundos...")
+            print("⚠️  Presiona Ctrl+C para detenerlo antes\n")
+            
+            agente = AgenteAutonomo()
+            agente.iniciar_bucle_autonomo(duracion_segundos=duracion)
+            
+            # Mostrar informe
+            informe = agente.obtener_informe()
+            print(f"\n📋 INFORME FINAL:")
+            print(f"   Experimentos: {informe['experimentos']}")
+            print(f"   Hallazgos: {informe['estadisticas']['hallazgos_relevantes']}")
+            print(f"   Patrones: {len(informe['patrones'])}")
+            
+            input("\nPresiona Enter para continuar...")
+            
+        except ValueError:
+            print("❌ Duración inválida")
+        except Exception as e:
+            print(f"❌ Error: {e}")
     
     def ejecutar(self):
         """Ejecuta el CLI principal"""
@@ -264,10 +295,14 @@ class CasinoPredictorCLI:
         print("⚠️  ADVERTENCIA: Proyecto educativo únicamente")
         print("   El juego puede crear adicción. No usar dinero real.\n")
         
+        # Verificar chatbot al inicio
+        ok, mensaje = self.chatbot.verificar_conexion()
+        print(f"🤖 Chatbot: {mensaje}\n")
+        
         while True:
             try:
                 self.mostrar_menu_principal()
-                opcion = input("\nElige una opción (1-7): ").strip()
+                opcion = input("\nElige una opción (1-8): ").strip()
                 
                 if opcion == '1':
                     self.menu_ruleta()
@@ -282,6 +317,8 @@ class CasinoPredictorCLI:
                 elif opcion == '6':
                     self.mostrar_estadisticas()
                 elif opcion == '7':
+                    self.menu_agente_autonomo()
+                elif opcion == '8':
                     print("\n👋 ¡Hasta luego!")
                     break
                 else:
@@ -296,14 +333,18 @@ class CasinoPredictorCLI:
 
 def main():
     """Función principal"""
-    cli = CasinoPredictorCLI()
-    cli.ejecutar()
+    if os.name == "nt":
+        if len(sys.argv) > 1 and sys.argv[1] == "--quick":
+            print("🚀 Modo rápido - Iniciando chat directo...")
+            cli = CasinoPredictorCLI()
+            cli.menu_chat()
+        else:
+            cli = CasinoPredictorCLI()
+            cli.ejecutar()
+    else:
+        cli = CasinoPredictorCLI()
+        cli.ejecutar()
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1 and sys.argv[1] == "--quick":
-        print("🚀 Modo rápido - Iniciando chat directo...")
-        cli = CasinoPredictorCLI()
-        cli.menu_chat()
-    else:
-        main()
+    main()

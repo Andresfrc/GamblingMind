@@ -3,6 +3,7 @@ import { useAppContext } from '../context/useAppContext';
 import { useBackend } from '../hooks/useBackend';
 import AnimatedBackground from '../components/AnimatedBackground';
 import SkeletonLoader from '../components/SkeletonLoader';
+import AgentStatus from '../components/AgentStatus';
 import '../styles/ConfigPage.css';
 
 const ConfigPage = () => {
@@ -15,7 +16,6 @@ const ConfigPage = () => {
 
   return (
     <div className="config-page">
-      <AnimatedBackground />
       
       <div className="config-content">
         <h1 className="config-title">Configuración</h1>
@@ -81,6 +81,8 @@ const ConfigPage = () => {
             <p><strong>Backend URL:</strong> {import.meta.env.VITE_API_URL || 'http://localhost:5000'}</p>
           </div>
         </div>
+
+        <AgentStatus />
 
         <div className="config-warning">
           <p>⚠️ <strong>ADVERTENCIA:</strong> Este sistema es exclusivamente educativo. 

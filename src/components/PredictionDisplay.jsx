@@ -1,27 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import AccuracyBadge from './AccuracyBadge';
 import { checkPredictionAccuracy, saveAccuracyRecord, getAccuracyStats } from '../utils/predictionAccuracy';
 import '../styles/PredictionDisplay.css';
 
 const PredictionDisplay = ({ game, prediction, lastSimulation, simulationHistory }) => {
-  const [accuracy, setAccuracy] = useState(null);
-  const [stats, setStats] = useState(null);
-
-  // Verificar predicción y guardar en histórico
-  useEffect(() => {
+  // Compute accuracy without setState in effect
+  const { accuracy, stats } = useMemo(() => {
     if (!prediction || !lastSimulation) {
-      setAccuracy(null);
-      return;
+      return { accuracy: null, stats: null };
     }
 
     const result = checkPredictionAccuracy(game, prediction, lastSimulation);
     if (result) {
-      setAccuracy(result);
+      // Save to localStorage directly in memoized computation
       saveAccuracyRecord(game, result);
-      const newStats = getAccuracyStats(game);
-      setStats(newStats);
+      return { accuracy: result, stats: getAccuracyStats(game) };
     }
-  }, [lastSimulation, prediction, game]);
+    return { accuracy: null, stats: null };
+  }, [game, prediction, lastSimulation]);
 
   if (!prediction && !lastSimulation) return null;
 

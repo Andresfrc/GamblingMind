@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, memo } from 'react';
 
-const AnimatedBackground = () => {
+const AnimatedBackground = memo(() => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -19,6 +19,7 @@ const AnimatedBackground = () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
+    // eslint-disable-next-line react-hooks/unsupported-syntax
     class Particle {
       constructor() {
         this.reset();
@@ -60,6 +61,7 @@ const AnimatedBackground = () => {
       }
     }
 
+    // eslint-disable-next-line react-hooks/unsupported-syntax
     class Circuit {
       constructor() {
         this.reset();
@@ -215,6 +217,8 @@ const AnimatedBackground = () => {
       }}
     />
   );
-};
+});
+
+AnimatedBackground.displayName = 'AnimatedBackground';
 
 export default AnimatedBackground;

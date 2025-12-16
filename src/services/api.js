@@ -1,14 +1,17 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:5000';
+const MAX_RETRIES = 2;
+const RETRY_DELAY = 1000;
 
 class ApiService {
-  async request(endpoint, options = {}) {
+  async request(endpoint, options = {}, retries = 0) {
     try {
       const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         headers: {
           'Content-Type': 'application/json',
           ...options.headers
         },
-        ...options
+        ...options,
+        timeout: 10000
       });
 
       let data = null;
@@ -29,6 +32,13 @@ class ApiService {
 
       return data;
     } catch (error) {
+      // Reintentar solo en errores de conexión (no HTTP errors)
+      if (retries < MAX_RETRIES && !error.status) {
+        console.warn(`🔄 Reintentando ${endpoint} (${retries + 1}/${MAX_RETRIES})...`);
+        await new Promise(r => setTimeout(r, RETRY_DELAY));
+        return this.request(endpoint, options, retries + 1);
+      }
+      
       console.error(`API Error [${endpoint}]:`, error);
       throw error;
     }
@@ -73,6 +83,24 @@ class ApiService {
 
   async resetTable(game, table) {
     return this.request(`/reset/${game}/${table}`, {
+      method: 'POST'
+    });
+  }
+
+  // Agente autónomo endpoints
+  async startAgent(duracion = 300) {
+    return this.request('/agente/iniciar', {
+      method: 'POST',
+      body: JSON.stringify({ duracion })
+    });
+  }
+
+  async getAgentStatus() {
+    return this.request('/agente/estado');
+  }
+
+  async stopAgent() {
+    return this.request('/agente/detener', {
       method: 'POST'
     });
   }

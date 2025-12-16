@@ -1,8 +1,8 @@
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, memo } from 'react';
 import '../styles/ChatInterface.css';
 
-const ChatInterface = ({ 
+const ChatInterface = memo(({ 
   messages,           // Array de mensajes desde la Page
   inputValue,         // Valor del input desde la Page
   onInputChange,      // Callback para cambios en el input
@@ -12,7 +12,6 @@ const ChatInterface = ({
 }) => {
   const messagesEndRef = useRef(null);
 
- 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -101,6 +100,8 @@ const ChatInterface = ({
       </div>
     </div>
   );
-};
+});
+
+ChatInterface.displayName = 'ChatInterface';
 
 export default ChatInterface;
